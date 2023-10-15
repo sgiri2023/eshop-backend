@@ -46,9 +46,12 @@ public class SpringSecurityConfig {
                     }
                 })).csrf().disable()
                 .authorizeHttpRequests()
+                .antMatchers("/api/user/info").permitAll()
                 .antMatchers("/api/user/add").permitAll()
+                .antMatchers("/api/user/list").permitAll()
                 .antMatchers("/api/user/login").permitAll()
                 .antMatchers("/api/product/**").permitAll()
+                .antMatchers("/api/user/details").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

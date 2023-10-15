@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -28,10 +29,12 @@ public class PermissionEntity implements GrantedAuthority, Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+//    @JsonBackReference
     UserEntity userId;
 
     @Override
     public String getAuthority() {
         return this.permissionName;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -62,6 +63,7 @@ public class UserEntity implements UserDetails, Serializable {
     List<AddressEntity> addresses;
 
     @OneToMany(mappedBy = "userId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JsonManagedReference
     List<PermissionEntity> permissions;
 
     @Override
