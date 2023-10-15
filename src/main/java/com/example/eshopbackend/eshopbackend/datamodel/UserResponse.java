@@ -13,7 +13,6 @@ import java.util.List;
 public class UserResponse {
     private Long id;
     private String email;
-    private String password;
     private String firstName;
     private String lastName;
     private Boolean isCustomer;
@@ -21,4 +20,5 @@ public class UserResponse {
     List<PermissionResponse> permission;
     private Boolean accountLocked;
     private Date createdDate;
+    private Date lastModifyDate;
 }

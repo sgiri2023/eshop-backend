@@ -1,13 +1,11 @@
 package com.example.eshopbackend.eshopbackend.controller;
 
-import com.example.eshopbackend.eshopbackend.datamodel.LoginRequest;
-import com.example.eshopbackend.eshopbackend.datamodel.SessionDataModel;
-import com.example.eshopbackend.eshopbackend.datamodel.UserRequest;
-import com.example.eshopbackend.eshopbackend.datamodel.UserResponse;
+import com.example.eshopbackend.eshopbackend.datamodel.*;
 import com.example.eshopbackend.eshopbackend.service.impl.UserServiceImpl;
 import com.example.eshopbackend.eshopbackend.session.SessionDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,6 +58,15 @@ public class UserController {
         return null;
     }
 
+    // http://localhost:8090/api/user/logout
+    @GetMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void logout(@RequestHeader String Authorization) {
+        if (SESSION_TRACKER.containsKey(Authorization)) {
+            SESSION_TRACKER.remove(Authorization);
+        }
+    }
+
     // http://localhost:8090/api/user/add
     @PostMapping("/add")
     public UserResponse addUser(@RequestBody UserRequest userRequest){
@@ -77,7 +84,6 @@ public class UserController {
     // http://localhost:8090/api/user/details
     @GetMapping("/details")
     public Object getUserDetails(@RequestHeader String Authorization){
-
         System.out.println("Inside User Details Controller");
         SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
         if (sessionData == null) {
@@ -85,5 +91,31 @@ public class UserController {
         }
         System.out.println("Session Details: " + sessionData);
         return userService.getUserByUserName(sessionData.getUserName());
+    }
+
+    // Add User Address
+    // http://localhost:8090/api/user/add-address
+    @PostMapping("/add-address")
+    public ResponseEntity<?> addUserAddress(@RequestHeader String Authorization, @RequestBody AddressRequest addressRequest){
+        System.out.println("Add address Request: " + addressRequest);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        List<AddressRequest> addressList = userService.addUserAddress(sessionData.getUserId(), addressRequest);
+        return new ResponseEntity<>(addressList, HttpStatus.OK);
+    }
+
+    // Get Address
+    // http://localhost:8090/api/user/get-address-list
+    @GetMapping("/get-address-list")
+    public ResponseEntity<?> getUserAddress(@RequestHeader String Authorization){
+        System.out.println("Get user address List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        List<AddressRequest> addressList = userService.getUserAddressList(sessionData.getUserId());
+        return new ResponseEntity<>(addressList, HttpStatus.OK);
     }
 }

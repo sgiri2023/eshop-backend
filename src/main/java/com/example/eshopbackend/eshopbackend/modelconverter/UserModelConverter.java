@@ -49,6 +49,7 @@ public class UserModelConverter {
         userResponse.setIsArchive(userEntity.getIsArchive());
         userResponse.setAccountLocked(userEntity.getAccountLocked());
         userResponse.setCreatedDate(userEntity.getCreatedDate());
+        userResponse.setLastModifyDate(userEntity.getLastModifiedDate());
         // System.out.println("Setting Permission Mapping"+ userEntity.getPermissions());
         if(userEntity.getPermissions() != null){
             List<PermissionResponse> permissionResponseArray = new ArrayList<>();
