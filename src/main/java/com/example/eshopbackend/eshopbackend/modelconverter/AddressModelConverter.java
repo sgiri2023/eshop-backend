@@ -9,14 +9,6 @@ import java.util.Date;
 
 public class AddressModelConverter {
 
-//    public Long id;
-//    public String fullName;
-//    public String addressLineOne;
-//    public String addressLineTwo;
-//    public String state;
-//    public String city;
-//    public Long pincode;
-//    public Boolean isDefault;
     public static AddressEntity requestToEntity(AddressRequest addressRequest, UserEntity userEntity){
 
         AddressEntity addressEntity = new AddressEntity();
