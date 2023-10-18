@@ -62,6 +62,9 @@ public class UserEntity implements UserDetails, Serializable {
     @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<AddressEntity> addresses;
 
+    @OneToMany(mappedBy = "sellerEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<ProductEntity> products;
+
     @OneToMany(mappedBy = "userId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JsonManagedReference
     List<PermissionEntity> permissions;
