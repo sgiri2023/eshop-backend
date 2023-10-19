@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "audittrail")
+@Table(name = "audit_trail")
 @Getter
 @Setter
 @NoArgsConstructor

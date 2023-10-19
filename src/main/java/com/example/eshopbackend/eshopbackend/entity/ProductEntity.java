@@ -44,6 +44,9 @@ public class ProductEntity implements Serializable {
     @JoinColumn(name = "seller_id")
     UserEntity sellerEntity;
 
+    @OneToOne(mappedBy = "productEntity")
+    private InvoiceEntity invoiceEntity;
+
     @CreatedDate
     @Column(name = "created_date")
     private Date createdDate;

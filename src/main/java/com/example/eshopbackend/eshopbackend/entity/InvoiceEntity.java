@@ -1,9 +1,13 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "invoice")
@@ -20,4 +24,59 @@ public class InvoiceEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
+
+    // OD21232312123
+    private String orderId;
+
+    Integer quantity;
+
+    Double unitPrice;
+
+    Double shippingCharge;
+
+    Double discountAmount;
+
+    Double totalAmount;
+
+    Double tax;
+
+    Double finalAmount;
+
+    String paymentMethod;
+
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    UserEntity buyerEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    UserEntity sellerEntity;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private AddressEntity addressEntity;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
+    private ProductEntity productEntity;
+
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isArchive;
+
+    @CreatedDate
+    @Column(name = "purchase_date")
+    private Date purchaseDate;
+
+    @CreatedDate
+    @Column(name = "delivery_date")
+    private Date deliveryDate;
+
+    @CreatedDate
+    @Column(name = "created_date")
+    private Date createdDate;
+
+    @LastModifiedDate
+    @Column(name = "last_modified_date")
+    private Date lastModifiedDate;
+
 }

@@ -40,6 +40,9 @@ public class AddressEntity implements Serializable {
     @JoinColumn(name = "user_id")
     UserEntity userId;
 
+    @OneToOne(mappedBy = "addressEntity")
+    private InvoiceEntity invoiceEntity;
+
     @CreatedDate
     @Column(name = "created_date")
     private Date createdDate;

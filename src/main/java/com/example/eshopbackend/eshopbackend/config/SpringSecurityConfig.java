@@ -52,6 +52,8 @@ public class SpringSecurityConfig {
                 .antMatchers("/api/user/login").permitAll()
                 .antMatchers("/api/product/get-product-list").permitAll()
                 .antMatchers("/api/user/add-address").authenticated()
+                .antMatchers("/api/invoice/create").authenticated()
+                .antMatchers("/api/invoice/get-invoice-list").authenticated()
                 .antMatchers("/api/user/logout").authenticated()
                 .antMatchers("/api/product/add").authenticated()
                 .antMatchers("/api/user/details").authenticated()
