@@ -1,6 +1,6 @@
 package com.example.eshopbackend.eshopbackend.modelconverter;
 
-import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
+import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
 import com.example.eshopbackend.eshopbackend.datamodel.*;
 import com.example.eshopbackend.eshopbackend.entity.*;
 

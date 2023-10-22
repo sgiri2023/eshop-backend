@@ -17,7 +17,7 @@ public class AddressModelConverter {
             addressEntity.setId(addressRequest.getId());
         }
         if (userEntity != null) {
-            addressEntity.setUserId(userEntity);
+            addressEntity.setUserEntity(userEntity);
         }
 
         addressEntity.setFullName(addressRequest.getFullName());

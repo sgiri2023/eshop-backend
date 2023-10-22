@@ -59,7 +59,7 @@ public class UserEntity implements UserDetails, Serializable {
     @Column(columnDefinition = "boolean default false")
     Boolean isArchive;
 
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<AddressEntity> addresses;
 
     @OneToMany(mappedBy = "sellerEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

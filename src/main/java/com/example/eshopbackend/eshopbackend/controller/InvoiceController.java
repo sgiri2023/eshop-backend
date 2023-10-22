@@ -36,7 +36,7 @@ public class InvoiceController {
     // http://localhost:8090/api/invoice/buyer/get-invoice-list
     @GetMapping("/buyer/get-invoice-list")
     public ResponseEntity<?> getBuyerInvoiceList(@RequestHeader String Authorization){
-        System.out.println("Get user address List: " + Authorization);
+        System.out.println("Get buyer invoice List: " + Authorization);
         SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
         if (sessionData == null) {
             return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
@@ -49,12 +49,24 @@ public class InvoiceController {
     // http://localhost:8090/api/invoice/seller/get-invoice-list
     @GetMapping("/seller/get-invoice-list")
     public ResponseEntity<?> getSellerInvoiceList(@RequestHeader String Authorization){
-        System.out.println("Get user address List: " + Authorization);
+        System.out.println("Get seller invoice List: " + Authorization);
         SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
         if (sessionData == null) {
             return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
         }
         List<InvoiceResponse> invoiceResponsesList = invoiceService.getAllSellerInvoice(sessionData.getUserId());
         return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/invoice/update-state/{invoiceId}
+    @PutMapping("/update-state/{invoiceId}")
+    public ResponseEntity<?> updateInvoiceState(@RequestHeader String Authorization, @PathVariable(value = "invoiceId") Long invoiceId, @RequestBody InvoiceRequest request){
+        System.out.println("Get user address List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        InvoiceResponse updateInvoice = invoiceService.updateInvoiceState(sessionData.getUserId(), invoiceId, request);
+        return new ResponseEntity<>(updateInvoice, HttpStatus.OK);
     }
 }

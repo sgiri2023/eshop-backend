@@ -1,10 +1,9 @@
 package com.example.eshopbackend.eshopbackend.service.impl;
 
-import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
+import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceResponse;
 import com.example.eshopbackend.eshopbackend.entity.*;
-import com.example.eshopbackend.eshopbackend.modelconverter.AddressModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.AuditTrailModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.InvoiceModelConverter;
 import com.example.eshopbackend.eshopbackend.repository.*;
@@ -88,8 +87,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceResponse> getAllSellerInvoice(Long userId) {
-        Optional<UserEntity> optionalBuyerEntity = userRepository.findById(userId);
-        List<InvoiceEntity> invoiceEntityList = invoiceRepository.findBySellerEntity(optionalBuyerEntity.get());
+        Optional<UserEntity> optionalSellerEntity = userRepository.findById(userId);
+        List<InvoiceEntity> invoiceEntityList = invoiceRepository.findBySellerEntity(optionalSellerEntity.get());
 
         List<InvoiceResponse> invoiceListResponse = new ArrayList<>();
         if(!invoiceEntityList.isEmpty()){
@@ -99,5 +98,25 @@ public class InvoiceServiceImpl implements InvoiceService {
             }
         }
         return invoiceListResponse;
+    }
+
+    public InvoiceResponse updateInvoiceState(Long sellerId, Long invoiceId, InvoiceRequest invoiceRequest){
+        Optional<UserEntity> optionalSellerEntity = userRepository.findById(sellerId);
+        InvoiceEntity invoiceEntity = new InvoiceEntity();
+        if(optionalSellerEntity.isPresent()){
+            Optional<InvoiceEntity> optionalInvocieEntity = invoiceRepository.findByIdAndSellerEntity(invoiceId, optionalSellerEntity.get());
+            invoiceEntity = optionalInvocieEntity.get();
+            invoiceEntity.setInvoiceState(InvoiceStateCode.valueOf(invoiceRequest.getInvoiceState().toUpperCase().trim()));
+            invoiceRepository.save(invoiceEntity);
+            System.out.println("Invoice Updated");
+
+            // Add Audit trail
+            AuditTrailEntity auditTrailEntity = new AuditTrailEntity();
+            auditTrailEntity = AuditTrailModelConverter.requestToEntity(invoiceEntity, InvoiceStateCode.valueOf(invoiceRequest.getInvoiceState().toUpperCase().trim()));
+            auditTrailRepository.save(auditTrailEntity);
+            System.out.println("Audit Trail Added");
+        }
+
+        return InvoiceModelConverter.entityToResponse(invoiceEntity);
     }
 }

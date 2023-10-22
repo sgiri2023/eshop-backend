@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
     List<InvoiceEntity> findByBuyerEntity(UserEntity buyerEntity);
     List<InvoiceEntity> findBySellerEntity(UserEntity sellerEntity);
+    Optional<InvoiceEntity> findByIdAndSellerEntity(Long invoiceId, UserEntity sellerEntity);
 }

@@ -1,11 +1,15 @@
-package com.example.eshopbackend.eshopbackend.common.utills;
+package com.example.eshopbackend.eshopbackend.common.enumConstant;
 
 public enum InvoiceStateCode {
-
     CREATED("CREATED"),
     ORDER_PLACED("ORDER_PLACED"),
     ORDER_SHIPPED("ORDER_SHIPPED"),
-    ORDER_OUT_FOR_DELIVERY("ORDER_OUT_FOR_DELIVERY");
+    ORDER_OUT_FOR_DELIVERY("ORDER_OUT_FOR_DELIVERY"),
+    ORDER_DELIVERED("ORDER_DELIVERED"),
+
+    ORDER_CANCELLED("ORDER_CANCELLED"),
+    ORDER_SETTLED("ORDER_SETTLED");
+
     private final String value;
 
     private InvoiceStateCode(String value) {

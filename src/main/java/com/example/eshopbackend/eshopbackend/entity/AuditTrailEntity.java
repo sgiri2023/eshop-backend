@@ -1,10 +1,12 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
-import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
+import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
 import com.sun.istack.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "audit_trail")
@@ -29,4 +31,9 @@ public class AuditTrailEntity {
     @ManyToOne
     @JoinColumn(name = "invoice_id")
     InvoiceEntity invoiceEntity;
+
+    @CreatedDate
+    @Column(name = "created_date")
+    private Date createdDate;
+
 }

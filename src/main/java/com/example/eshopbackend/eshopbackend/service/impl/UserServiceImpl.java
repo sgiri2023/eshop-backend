@@ -96,17 +96,18 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<AddressRequest> getUserAddressList(Long userId){
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
+
         List<AddressRequest> addressRequestsList = new ArrayList<>();
-        Optional<UserEntity> optionalUserEntityForAddress = userRepository.findById(userId);
-        if (optionalUserEntityForAddress.isPresent()) {
-            List<AddressEntity> addressList = optionalUserEntityForAddress.get().getAddresses();
-            if(!addressList.isEmpty()){
-                for(AddressEntity address: addressList){
+        List<AddressEntity> addressListEntity = addressRepository.findByUserEntity(optionalUserEntity.get());
+
+        if(!addressListEntity.isEmpty()){
+                for(AddressEntity address: addressListEntity){
                     AddressRequest tempResponse = AddressModelConverter.entityToRequest(address);
                     addressRequestsList.add(tempResponse);
                 }
-            }
         }
+
         return addressRequestsList;
     }
 

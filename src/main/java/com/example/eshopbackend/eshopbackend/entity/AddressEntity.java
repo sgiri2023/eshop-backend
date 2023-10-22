@@ -38,7 +38,7 @@ public class AddressEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    UserEntity userId;
+    UserEntity userEntity;
 
     @OneToOne(mappedBy = "addressEntity")
     private InvoiceEntity invoiceEntity;

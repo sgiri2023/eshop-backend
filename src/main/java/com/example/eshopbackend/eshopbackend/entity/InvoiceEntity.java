@@ -1,6 +1,6 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
-import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
+import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
 import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
