@@ -23,6 +23,7 @@ public class InvoiceResponse {
     Double tax;
     Double finalAmount;
     String paymentMethod;
+    String invoiceState;
 //    UserResponse buyerId;
 //    UserResponse sellerId;
     ProductResponse productResponse;

@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.modelconverter;
 
+import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
 import com.example.eshopbackend.eshopbackend.datamodel.*;
 import com.example.eshopbackend.eshopbackend.entity.AddressEntity;
 import com.example.eshopbackend.eshopbackend.entity.InvoiceEntity;
@@ -32,6 +33,7 @@ public class InvoiceModelConverter {
         invoiceEntity.setOrderId(request.getOrderId());
 
         invoiceEntity.setPaymentMethod(request.getPaymentMethod());
+        invoiceEntity.setInvoiceState(InvoiceStateCode.valueOf(request.getInvoiceState().toUpperCase().trim()));
         invoiceEntity.setQuantity(request.getQuantity());
         invoiceEntity.setUnitPrice(request.getUnitPrice());
         invoiceEntity.setTotalAmount(request.getTotalAmount());
@@ -60,6 +62,7 @@ public class InvoiceModelConverter {
         invoiceResponse.setTax(entity.getTax());
         invoiceResponse.setFinalAmount(entity.getFinalAmount());
         invoiceResponse.setPaymentMethod(entity.getPaymentMethod());
+        invoiceResponse.setInvoiceState(entity.getInvoiceState().getValue());
         invoiceResponse.setIsArchive(entity.getIsArchive());
         invoiceResponse.setPurchaseDate(entity.getPurchaseDate());
         invoiceResponse.setDeliveryDate(entity.getDeliveryDate());

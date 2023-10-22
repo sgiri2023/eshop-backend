@@ -8,4 +8,5 @@ import java.util.List;
 public interface InvoiceService {
     public InvoiceResponse createInvoice(InvoiceRequest invoiceRequest, Long buyerId);
     public List<InvoiceResponse> getAllBuyerInvoice(Long userId);
+    public List<InvoiceResponse> getAllSellerInvoice(Long userId);
 }

@@ -1,5 +1,7 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
+import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
+import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -41,6 +43,11 @@ public class InvoiceEntity implements Serializable {
     Double tax;
 
     Double finalAmount;
+
+    @Column(length = 20)
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    InvoiceStateCode invoiceState;
 
     String paymentMethod;
 

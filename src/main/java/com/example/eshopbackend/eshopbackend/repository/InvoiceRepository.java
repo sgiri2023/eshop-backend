@@ -11,6 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
-
-    List<InvoiceEntity> findByBuyerEntity(UserEntity buyerentity);
+    List<InvoiceEntity> findByBuyerEntity(UserEntity buyerEntity);
+    List<InvoiceEntity> findBySellerEntity(UserEntity sellerEntity);
 }

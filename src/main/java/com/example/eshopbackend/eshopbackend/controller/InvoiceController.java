@@ -33,15 +33,28 @@ public class InvoiceController {
     }
 
     // Get Address
-    // http://localhost:8090/api/invoice/get-invoice-list
-    @GetMapping("/get-invoice-list")
-    public ResponseEntity<?> getInvoiceList(@RequestHeader String Authorization){
+    // http://localhost:8090/api/invoice/buyer/get-invoice-list
+    @GetMapping("/buyer/get-invoice-list")
+    public ResponseEntity<?> getBuyerInvoiceList(@RequestHeader String Authorization){
         System.out.println("Get user address List: " + Authorization);
         SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
         if (sessionData == null) {
             return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
         }
         List<InvoiceResponse> invoiceResponsesList = invoiceService.getAllBuyerInvoice(sessionData.getUserId());
+        return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
+    }
+
+    // Get Address
+    // http://localhost:8090/api/invoice/seller/get-invoice-list
+    @GetMapping("/seller/get-invoice-list")
+    public ResponseEntity<?> getSellerInvoiceList(@RequestHeader String Authorization){
+        System.out.println("Get user address List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        List<InvoiceResponse> invoiceResponsesList = invoiceService.getAllSellerInvoice(sessionData.getUserId());
         return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
     }
 }

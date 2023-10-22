@@ -25,6 +25,7 @@ public class InvoiceRequest {
     Double finalAmount;
     Long productId;
     String paymentMethod;
+    String invoiceState;
     Long sellerId;
     Long addressId;
     Boolean isArchive;

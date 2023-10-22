@@ -80,4 +80,19 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         return invoiceListResponse;
     }
+
+    @Override
+    public List<InvoiceResponse> getAllSellerInvoice(Long userId) {
+        Optional<UserEntity> optionalBuyerEntity = userRepository.findById(userId);
+        List<InvoiceEntity> invoiceEntityList = invoiceRepository.findBySellerEntity(optionalBuyerEntity.get());
+
+        List<InvoiceResponse> invoiceListResponse = new ArrayList<>();
+        if(!invoiceEntityList.isEmpty()){
+            for(InvoiceEntity invoice : invoiceEntityList){
+                InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoice);
+                invoiceListResponse.add(invoiceResponse);
+            }
+        }
+        return invoiceListResponse;
+    }
 }

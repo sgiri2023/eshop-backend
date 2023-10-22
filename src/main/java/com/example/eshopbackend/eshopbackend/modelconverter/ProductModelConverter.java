@@ -47,7 +47,7 @@ public class ProductModelConverter {
             response.setId(entity.getId());
         }
         response.setName(entity.getName());
-        response.setDescription(entity.getName());
+        response.setDescription(entity.getDescription());
         response.setActualPrice(entity.getActualPrice());
         response.setDiscountRate(entity.getDiscountRate());
         response.setDiscountedPrice(entity.getDiscountedPrice());
