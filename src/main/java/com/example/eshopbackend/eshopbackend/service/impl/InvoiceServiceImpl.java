@@ -1,16 +1,13 @@
 package com.example.eshopbackend.eshopbackend.service.impl;
 
+import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceResponse;
-import com.example.eshopbackend.eshopbackend.entity.AddressEntity;
-import com.example.eshopbackend.eshopbackend.entity.InvoiceEntity;
-import com.example.eshopbackend.eshopbackend.entity.ProductEntity;
-import com.example.eshopbackend.eshopbackend.entity.UserEntity;
+import com.example.eshopbackend.eshopbackend.entity.*;
+import com.example.eshopbackend.eshopbackend.modelconverter.AddressModelConverter;
+import com.example.eshopbackend.eshopbackend.modelconverter.AuditTrailModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.InvoiceModelConverter;
-import com.example.eshopbackend.eshopbackend.repository.AddressRepository;
-import com.example.eshopbackend.eshopbackend.repository.InvoiceRepository;
-import com.example.eshopbackend.eshopbackend.repository.ProductRepository;
-import com.example.eshopbackend.eshopbackend.repository.UserRepository;
+import com.example.eshopbackend.eshopbackend.repository.*;
 import com.example.eshopbackend.eshopbackend.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +30,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     AddressRepository addressRepository;
+    @Autowired
+    AuditTrailRepository auditTrailRepository;
 
     public InvoiceResponse createInvoice(InvoiceRequest invoiceRequest, Long buyerId){
 
@@ -59,6 +58,12 @@ public class InvoiceServiceImpl implements InvoiceService {
             System.out.println("All Found");
             invoiceEntity = InvoiceModelConverter.requestToEntity(invoiceRequest, optionalSellerEntity.get(), optionalBuyerEntity.get(),optionalProductEntity.get(), optionalAddressEntity.get());
             savedInvoiceEntity = invoiceRepository.save(invoiceEntity);
+            System.out.println("Invoice Created");
+            // add Audit Trail
+            AuditTrailEntity auditTrailEntity = new AuditTrailEntity();
+            auditTrailEntity = AuditTrailModelConverter.requestToEntity(savedInvoiceEntity, savedInvoiceEntity.getInvoiceState());
+            auditTrailRepository.save(auditTrailEntity);
+            System.out.println("Audit Trail Added");
         } else {
             System.out.println("Not Found");
         }

@@ -67,6 +67,9 @@ public class InvoiceEntity implements Serializable {
     @JoinColumn(name = "product_id")
     private ProductEntity productEntity;
 
+    @OneToMany(mappedBy = "invoiceEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<AuditTrailEntity> invoiceAuditTrailEntity;
+
     @Column(columnDefinition = "boolean default false")
     private Boolean isArchive;
 

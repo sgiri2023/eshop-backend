@@ -2,12 +2,11 @@ package com.example.eshopbackend.eshopbackend.modelconverter;
 
 import com.example.eshopbackend.eshopbackend.common.utills.InvoiceStateCode;
 import com.example.eshopbackend.eshopbackend.datamodel.*;
-import com.example.eshopbackend.eshopbackend.entity.AddressEntity;
-import com.example.eshopbackend.eshopbackend.entity.InvoiceEntity;
-import com.example.eshopbackend.eshopbackend.entity.ProductEntity;
-import com.example.eshopbackend.eshopbackend.entity.UserEntity;
+import com.example.eshopbackend.eshopbackend.entity.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class InvoiceModelConverter {
 
@@ -74,6 +73,18 @@ public class InvoiceModelConverter {
         ProductResponse productResponse = new ProductResponse();
         productResponse = ProductModelConverter.entityToResponse(entity.getProductEntity());
         invoiceResponse.setProductResponse(productResponse);
+
+        // audit Response List
+        List<AuditResponse> auditResponseList = new ArrayList<>();
+        if(entity.getInvoiceAuditTrailEntity() != null && !entity.getInvoiceAuditTrailEntity().isEmpty()){
+            for(AuditTrailEntity invoiceAudit: entity.getInvoiceAuditTrailEntity()){
+                AuditResponse tempAuditResponse = new AuditResponse();
+                tempAuditResponse = AuditTrailModelConverter.entityToResponse(invoiceAudit);
+                auditResponseList.add(tempAuditResponse);
+            }
+            invoiceResponse.setAuditResponseList(auditResponseList);
+        }
+
 
         return invoiceResponse;
     }

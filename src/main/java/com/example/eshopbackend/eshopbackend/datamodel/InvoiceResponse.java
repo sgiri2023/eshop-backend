@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,6 +29,7 @@ public class InvoiceResponse {
 //    UserResponse sellerId;
     ProductResponse productResponse;
     AddressRequest addressRequest;
+    List<AuditResponse> auditResponseList;
     Boolean isArchive;
     Date purchaseDate;
     Date deliveryDate;
