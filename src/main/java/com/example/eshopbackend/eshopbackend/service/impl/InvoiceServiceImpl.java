@@ -1,6 +1,7 @@
 package com.example.eshopbackend.eshopbackend.service.impl;
 
 import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
+import com.example.eshopbackend.eshopbackend.common.utils.Utils;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceResponse;
 import com.example.eshopbackend.eshopbackend.entity.*;
@@ -32,6 +33,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
     AuditTrailRepository auditTrailRepository;
 
+    @Autowired
+    Utils utils;
+
     public InvoiceResponse createInvoice(InvoiceRequest invoiceRequest, Long buyerId){
 
         Optional<UserEntity> optionalBuyerEntity = userRepository.findById(buyerId);
@@ -55,6 +59,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         if(optionalSellerEntity.isPresent() && optionalBuyerEntity.isPresent() && optionalAddressEntity.isPresent()){
             System.out.println("All Found");
+            invoiceRequest.setOrderId(utils.generateOrderId());
             invoiceEntity = InvoiceModelConverter.requestToEntity(invoiceRequest, optionalSellerEntity.get(), optionalBuyerEntity.get(),optionalProductEntity.isPresent() ? optionalProductEntity.get(): null, optionalAddressEntity.isPresent() ? optionalAddressEntity.get() : null);
             savedInvoiceEntity = invoiceRepository.save(invoiceEntity);
             System.out.println("Invoice Created");

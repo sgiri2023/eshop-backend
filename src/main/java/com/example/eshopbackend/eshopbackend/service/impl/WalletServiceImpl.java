@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.service.impl;
 
+import com.example.eshopbackend.eshopbackend.common.utils.Utils;
 import com.example.eshopbackend.eshopbackend.datamodel.TransactionRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.WalletBankResponse;
 import com.example.eshopbackend.eshopbackend.entity.TransactionEntity;
@@ -37,6 +38,9 @@ public class WalletServiceImpl implements WalletBankService {
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Autowired
+    Utils utils;
+
     @Value("${admin.topupWalletId}")
     private Long topUpAccountId;
 
@@ -50,10 +54,7 @@ public class WalletServiceImpl implements WalletBankService {
             System.out.println("User Present");
             WallerBankEntity walletBankEntity = new WallerBankEntity();
 
-            Date dNow = new Date();
-            SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
-            String datetime = ft.format(dNow);
-            String walletId = "ESHOPWALLET" + datetime;
+            String walletId= utils.generateWalletId();
             Double defaultWalletbalance = 1000.00;
 
             walletBankEntity.setName(optionaluserEntity.get().getFirstName() + " " + optionaluserEntity.get().getLastName());
@@ -113,10 +114,7 @@ public class WalletServiceImpl implements WalletBankService {
                 Double UserBalance =firstUserBank.getBalance();
 
                 if(AdminBankBalance> rechargeAmount){
-                    Date dNow = new Date();
-                    SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
-                    String datetime = ft.format(dNow);
-                    String transactionRefNo = "ESHOPTRAN" + datetime;
+                    String transactionRefNo = utils.generateTransactionId();
                     transactionRequest.setReferenceNo(transactionRefNo);
 
                     System.out.println("Initiating Funding Debit");
