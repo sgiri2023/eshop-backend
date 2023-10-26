@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "wallet_bank")
@@ -44,4 +45,10 @@ public class WallerBankEntity implements Serializable {
 
     @Column(columnDefinition = "boolean default false")
     Boolean isArchive;
+
+    @OneToMany(mappedBy = "fromWalletBankEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<TransactionEntity> fromTransactionEntity;
+
+    @OneToMany(mappedBy = "toWalletBankEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<TransactionEntity> toTransactionEntity;
 }

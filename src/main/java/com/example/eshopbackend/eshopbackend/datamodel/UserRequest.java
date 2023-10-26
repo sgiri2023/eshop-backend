@@ -14,5 +14,6 @@ public class UserRequest {
     private String firstName;
     private String lastName;
     private Boolean isCustomer;
+    private Boolean isAdmin;
     private Boolean isArchive;
 }

@@ -16,6 +16,7 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private Boolean isCustomer;
+    private Boolean isAdmin;
     private Boolean isArchive;
     List<PermissionResponse> permission;
     private Boolean accountLocked;

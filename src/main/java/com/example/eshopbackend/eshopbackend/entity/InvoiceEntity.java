@@ -70,6 +70,9 @@ public class InvoiceEntity implements Serializable {
     @OneToMany(mappedBy = "invoiceEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<AuditTrailEntity> invoiceAuditTrailEntity;
 
+    @OneToMany(mappedBy = "invoiceEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<TransactionEntity> toTransactionEntity;
+
     @Column(columnDefinition = "boolean default false")
     private Boolean isArchive;
 

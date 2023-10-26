@@ -26,6 +26,7 @@ public class UserModelConverter {
         userEntity.setFirstName(userRequest.getFirstName());
         userEntity.setLastName(userRequest.getLastName());
         userEntity.setIsCustomer(userRequest.getIsCustomer());
+        userEntity.setIsAdmin(userRequest.getIsAdmin());
         userEntity.setIsArchive(userRequest.getIsArchive());
         userEntity.setEnable(true);
         userEntity.setAccountLocked(false);
@@ -46,6 +47,7 @@ public class UserModelConverter {
         userResponse.setFirstName(userEntity.getFirstName());
         userResponse.setLastName(userEntity.getLastName());
         userResponse.setIsCustomer(userEntity.getIsCustomer());
+        userResponse.setIsAdmin(userEntity.getIsAdmin());
         userResponse.setIsArchive(userEntity.getIsArchive());
         userResponse.setAccountLocked(userEntity.getAccountLocked());
         userResponse.setCreatedDate(userEntity.getCreatedDate());

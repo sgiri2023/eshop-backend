@@ -36,6 +36,8 @@ public class UserEntity implements UserDetails, Serializable {
 
     private Boolean isCustomer; // true -> Buyer || false -> Seller
 
+    private Boolean isAdmin;
+
     private String email;
 
     private String password;
@@ -73,6 +75,9 @@ public class UserEntity implements UserDetails, Serializable {
 
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<WallerBankEntity> walletBankEntity;
+
+    @OneToMany(mappedBy = "fromUserEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<TransactionEntity> transactionEntities;
 
     @OneToMany(mappedBy = "userId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JsonManagedReference
