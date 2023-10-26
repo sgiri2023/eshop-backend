@@ -1,7 +1,9 @@
 package com.example.eshopbackend.eshopbackend.controller;
 
+import com.example.eshopbackend.eshopbackend.datamodel.AddressRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.SessionDataModel;
+import com.example.eshopbackend.eshopbackend.datamodel.TransactionRequest;
 import com.example.eshopbackend.eshopbackend.service.impl.WalletServiceImpl;
 import com.example.eshopbackend.eshopbackend.session.SessionDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +42,18 @@ public class WalletBankController {
             return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(walletService.getWalletBankDetails(sessionData.getUserId()), HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/wallet/recharge
+    @PostMapping("/recharge")
+    public ResponseEntity<?> rechargeWallet(@RequestHeader String Authorization, @RequestBody TransactionRequest walletRechargeRequest){
+        // System.out.println("Add Product request: " + request);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        // setting from User id
+        walletService.rechargeWallet(sessionData.getUserId(), walletRechargeRequest);
+        return new ResponseEntity<>("Wallet Recharge Successfully", HttpStatus.OK);
     }
 }

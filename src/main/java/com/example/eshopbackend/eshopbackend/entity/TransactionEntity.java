@@ -52,8 +52,8 @@ public class TransactionEntity implements Serializable {
     InvoiceEntity invoiceEntity;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "from_user_id")
-    UserEntity fromUserEntity;
+    @JoinColumn(name = "user_id")
+    UserEntity userEntity;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "from_bank_id")

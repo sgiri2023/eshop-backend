@@ -66,13 +66,17 @@ public class InvoiceModelConverter {
         invoiceResponse.setPurchaseDate(entity.getPurchaseDate());
         invoiceResponse.setDeliveryDate(entity.getDeliveryDate());
 
-        AddressRequest addressRequest = new AddressRequest();
-        addressRequest = AddressModelConverter.entityToRequest(entity.getAddressEntity());
-        invoiceResponse.setAddressRequest(addressRequest);
+        if(entity.getAddressEntity() != null){
+            AddressRequest addressRequest = new AddressRequest();
+            addressRequest = AddressModelConverter.entityToRequest(entity.getAddressEntity());
+            invoiceResponse.setAddressRequest(addressRequest);
+        }
 
-        ProductResponse productResponse = new ProductResponse();
-        productResponse = ProductModelConverter.entityToResponse(entity.getProductEntity());
-        invoiceResponse.setProductResponse(productResponse);
+        if(entity.getProductEntity() != null){
+            ProductResponse productResponse = new ProductResponse();
+            productResponse = ProductModelConverter.entityToResponse(entity.getProductEntity());
+            invoiceResponse.setProductResponse(productResponse);
+        }
 
         // audit Response List
         List<AuditResponse> auditResponseList = new ArrayList<>();

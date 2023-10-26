@@ -1,7 +1,7 @@
 package com.example.eshopbackend.eshopbackend.common.enumConstant;
 
 public enum TransactionTypeCode {
-    WALLET_BEDIT("WALLET_DEBIT"),
+    WALLET_DEBIT("WALLET_DEBIT"),
     WALLET_CREDIT("WALLET_CREDIT"),
     TOP_UP_DEBIT("TOP_UP_DEBIT"),
     TOP_UP_CREDIT("TOP_UP_CREDIT");

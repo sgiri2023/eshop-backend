@@ -53,11 +53,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         if(optionalProductEntity.isPresent()){
             System.out.println("Product Found");
         }
-        if(optionalSellerEntity.isPresent() && optionalBuyerEntity.isPresent() && optionalAddressEntity.isPresent() && optionalProductEntity.isPresent()){
+        if(optionalSellerEntity.isPresent() && optionalBuyerEntity.isPresent() && optionalAddressEntity.isPresent()){
             System.out.println("All Found");
-            invoiceEntity = InvoiceModelConverter.requestToEntity(invoiceRequest, optionalSellerEntity.get(), optionalBuyerEntity.get(),optionalProductEntity.get(), optionalAddressEntity.get());
+            invoiceEntity = InvoiceModelConverter.requestToEntity(invoiceRequest, optionalSellerEntity.get(), optionalBuyerEntity.get(),optionalProductEntity.isPresent() ? optionalProductEntity.get(): null, optionalAddressEntity.isPresent() ? optionalAddressEntity.get() : null);
             savedInvoiceEntity = invoiceRepository.save(invoiceEntity);
             System.out.println("Invoice Created");
+
             // add Audit Trail
             AuditTrailEntity auditTrailEntity = new AuditTrailEntity();
             auditTrailEntity = AuditTrailModelConverter.requestToEntity(savedInvoiceEntity, savedInvoiceEntity.getInvoiceState());
