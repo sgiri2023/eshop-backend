@@ -9,13 +9,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "products")
+@Table(name = "wallet_bank")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductEntity implements Serializable {
+public class WallerBankEntity implements Serializable {
 
     private transient static final long serialVersionUID = 1L;
 
@@ -26,28 +26,13 @@ public class ProductEntity implements Serializable {
 
     private String name;
 
-    private String description;
+    private Double balance;
 
-    private Integer stockCount;
-
-    private Double actualPrice;
-
-    private Double discountRate;
-
-    private Double ratings;
-
-    private Double discountedPrice;
-
-    private String pictureUrl;
-
-    private Integer deliveryDays;
+    private String walletId;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
-    UserEntity sellerEntity;
-
-    @OneToOne(mappedBy = "productEntity")
-    private InvoiceEntity invoiceEntity;
+    @JoinColumn(name = "user_id")
+    UserEntity userEntity;
 
     @CreatedDate
     @Column(name = "created_date")
@@ -57,13 +42,6 @@ public class ProductEntity implements Serializable {
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
 
-    @PrePersist
-    void onPrePersist() {
-        if (ratings == null) {
-            ratings = 0.0;
-        }
-        if (stockCount == null) {
-            stockCount = 0;
-        }
-    }
+    @Column(columnDefinition = "boolean default false")
+    Boolean isArchive;
 }
