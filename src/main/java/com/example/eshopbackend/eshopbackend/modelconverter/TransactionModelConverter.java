@@ -44,4 +44,29 @@ public class TransactionModelConverter {
 
         return transactionEntity;
     }
+
+    public static TransactionResponse entityToResponse(TransactionEntity transactionEntity){
+        TransactionResponse transactionResponse = new TransactionResponse();
+
+        if(transactionEntity.getId() != null){
+            transactionResponse.setId(transactionEntity.getId());
+        }
+        transactionResponse.setReferenceNo(transactionEntity.getReferenceNo());
+        transactionResponse.setAmount(transactionEntity.getAmount());
+        transactionResponse.setDescription(transactionEntity.getDescription());
+        transactionResponse.setTransactionDate(transactionEntity.getTransactionDate());
+        transactionResponse.setProcessingDate(transactionEntity.getProcessingDate());
+        transactionResponse.setTransactionType(transactionEntity.getTransactionType().getValue());
+        transactionResponse.setTransactionStatus(transactionEntity.getTransactionStatus().getValue());
+        transactionResponse.setPaymentMethod(transactionEntity.getPaymentMethod().getValue());
+        if(transactionEntity.getInvoiceEntity() != null){
+            transactionResponse.setInvoiceId(transactionEntity.getInvoiceEntity().getId());
+        }
+
+        // transactionResponse.setUserId(transactionEntity.getUserEntity().getId());
+        transactionResponse.setFromAccountName(transactionEntity.getFromWalletBankEntity().getName());
+        transactionResponse.setToAccountName(transactionEntity.getToWalletBankEntity().getName());
+
+        return transactionResponse;
+    }
 }

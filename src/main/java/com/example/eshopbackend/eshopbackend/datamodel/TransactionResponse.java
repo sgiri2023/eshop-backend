@@ -20,5 +20,7 @@ public class TransactionResponse {
     private String transactionType;
     private String transactionStatus;
     private Long invoiceId;
-    private Long toUserId;
+    // private Long userId;
+    private String fromAccountName;
+    private String toAccountName;
 }
