@@ -30,7 +30,7 @@ public class WalletServiceImpl implements WalletBankService {
         System.out.println("Waleet Create for : " + userId);
         Optional<UserEntity> optionaluserEntity = userRepository.findById(userId);
 
-        if(optionaluserEntity.isPresent() && optionaluserEntity.get().getWalletBankEntity() != null){
+        if(optionaluserEntity.isPresent()){
 
             System.out.println("User Present");
             WallerBankEntity walletBankEntity = new WallerBankEntity();
@@ -55,17 +55,21 @@ public class WalletServiceImpl implements WalletBankService {
     }
 
     @Override
-    public WalletBankResponse getWalletBankDetails(Long userId) {
+    public List<WalletBankResponse> getWalletBankDetails(Long userId) {
         List<WallerBankEntity> walletBankEntityList = new ArrayList<>();
-        WalletBankResponse walletBankResponse = new WalletBankResponse();
+        List<WalletBankResponse> walletBankResponseList = new ArrayList<>();
 
         Optional<UserEntity> optionaluserEntity = userRepository.findById(userId);
         if(optionaluserEntity.isPresent()){
             walletBankEntityList = walletBankRepository.findByUserEntity(optionaluserEntity.get());
             if(!walletBankEntityList.isEmpty()){
-                walletBankResponse = WalletBankModelConverter.entityToRequest(walletBankEntityList.get(0));
+                for(WallerBankEntity walletBankEntity : walletBankEntityList){
+                    WalletBankResponse tempWalletBankResponse = new WalletBankResponse();
+                    tempWalletBankResponse = WalletBankModelConverter.entityToRequest(walletBankEntity);
+                    walletBankResponseList.add(tempWalletBankResponse);
+                }
             }
         }
-        return walletBankResponse;
+        return walletBankResponseList;
     }
 }
