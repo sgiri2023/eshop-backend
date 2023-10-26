@@ -69,6 +69,8 @@ public class InvoiceServiceImpl implements InvoiceService {
             auditTrailEntity = AuditTrailModelConverter.requestToEntity(savedInvoiceEntity, savedInvoiceEntity.getInvoiceState());
             auditTrailRepository.save(auditTrailEntity);
             System.out.println("Audit Trail Added");
+
+
         } else {
             System.out.println("Not Found");
         }
