@@ -20,4 +20,5 @@ public class ProductRequest {
     private String pictureUrl;
     private Date createdDate;
     private Date lastModifyDate;
+    private Integer deliveryDays;
 }

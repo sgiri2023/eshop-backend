@@ -4,7 +4,9 @@ import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCod
 import com.example.eshopbackend.eshopbackend.datamodel.*;
 import com.example.eshopbackend.eshopbackend.entity.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +46,12 @@ public class InvoiceModelConverter {
         invoiceEntity.setPurchaseDate(new Date());
         invoiceEntity.setCreatedDate(new Date());
         invoiceEntity.setLastModifiedDate(new Date());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DATE, productEntity.getDeliveryDays().intValue());
+        invoiceEntity.setDeliveryDate(calendar.getTime());
+
         return invoiceEntity;
     }
 

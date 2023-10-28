@@ -37,6 +37,7 @@ public class ProductModelConverter {
         productEntity.setPictureUrl(request.getPictureUrl());
         productEntity.setCreatedDate(new Date());
         productEntity.setLastModifiedDate(new Date());
+        productEntity.setDeliveryDays(request.getDeliveryDays());
 
         return productEntity;
     }
@@ -61,6 +62,7 @@ public class ProductModelConverter {
         response.setSellerId(entity.getSellerEntity().getId());
         response.setSellerName(entity.getSellerEntity().getFirstName() + " " + entity.getSellerEntity().getLastName());
         response.setPictureUrl(entity.getPictureUrl());
+        response.setDeliveryDays(entity.getDeliveryDays());
         response.setCreatedDate(new Date());
 
         return response;

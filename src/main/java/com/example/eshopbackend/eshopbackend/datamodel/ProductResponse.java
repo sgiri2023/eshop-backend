@@ -23,4 +23,5 @@ public class ProductResponse {
     private String sellerName;
     private Date createdDate;
     private Date lastModifyDate;
+    private Integer deliveryDays;
 }
