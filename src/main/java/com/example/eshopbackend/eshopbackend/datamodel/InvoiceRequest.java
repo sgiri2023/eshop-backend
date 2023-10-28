@@ -16,13 +16,15 @@ import java.util.Date;
 public class InvoiceRequest {
     public Long id;
     String orderId;
-    Integer quantity;
+
     Double unitPrice;
+    Double discountRate;
+    Integer quantity;
+    // Double discountedAmount;
+    Double taxRate;
     Double shippingCharge;
-    Double discountAmount;
-    Double totalAmount;
-    Double tax;
-    Double finalAmount;
+    // Double FinalAmount;
+
     Long productId;
     String paymentMethod;
     String invoiceState;

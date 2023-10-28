@@ -26,6 +26,10 @@ public class InvoiceModelConverter {
         }
         if(productEntity != null){
             invoiceEntity.setProductEntity(productEntity);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.DATE, productEntity.getDeliveryDays().intValue());
+            invoiceEntity.setDeliveryDate(calendar.getTime());
         }
         if(addressEntity != null){
             invoiceEntity.setAddressEntity(addressEntity);
@@ -35,22 +39,19 @@ public class InvoiceModelConverter {
 
         invoiceEntity.setPaymentMethod(request.getPaymentMethod());
         invoiceEntity.setInvoiceState(InvoiceStateCode.valueOf(request.getInvoiceState().toUpperCase().trim()));
+
         invoiceEntity.setQuantity(request.getQuantity());
         invoiceEntity.setUnitPrice(request.getUnitPrice());
-        invoiceEntity.setTotalAmount(request.getTotalAmount());
-        invoiceEntity.setDiscountAmount(request.getDiscountAmount());
-        invoiceEntity.setTax(request.getTax());
-        invoiceEntity.setFinalAmount(request.getFinalAmount());
+        invoiceEntity.setDiscountRate(request.getDiscountRate());
+        invoiceEntity.setTaxRate(request.getTaxRate());
         invoiceEntity.setShippingCharge(request.getShippingCharge());
-        invoiceEntity.setIsArchive(false);
-        invoiceEntity.setPurchaseDate(new Date());
+
+        invoiceEntity.setIsArchive(request.getIsArchive());
+        invoiceEntity.setPurchaseDate(request.getPurchaseDate());
         invoiceEntity.setCreatedDate(new Date());
         invoiceEntity.setLastModifiedDate(new Date());
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DATE, productEntity.getDeliveryDays().intValue());
-        invoiceEntity.setDeliveryDate(calendar.getTime());
+
 
         return invoiceEntity;
     }
@@ -61,13 +62,23 @@ public class InvoiceModelConverter {
             invoiceResponse.setId(entity.getId());
         }
         invoiceResponse.setOrderId(entity.getOrderId());
-        invoiceResponse.setQuantity(entity.getQuantity());
-        invoiceResponse.setUnitPrice(entity.getUnitPrice());
-        invoiceResponse.setShippingCharge(entity.getShippingCharge());
-        invoiceResponse.setDiscountAmount(entity.getDiscountAmount());
-        invoiceResponse.setTotalAmount(entity.getTotalAmount());
-        invoiceResponse.setTax(entity.getTax());
-        invoiceResponse.setFinalAmount(entity.getFinalAmount());
+
+        Double unitPrice = entity.getUnitPrice();
+        Double discountRate = entity.getDiscountRate();
+        Integer quantity = entity.getQuantity();
+        Double discountedAmount = unitPrice*(1-discountRate/100)* quantity;
+        Double taxRate = entity.getTaxRate();
+        Double shippingCharge = entity.getShippingCharge();
+        Double finalAmount = shippingCharge + discountedAmount*(100 + taxRate)/100;
+
+        invoiceResponse.setUnitPrice(unitPrice);
+        invoiceResponse.setDiscountRate(discountRate);
+        invoiceResponse.setQuantity(quantity);
+        invoiceResponse.setDiscountedAmount(discountedAmount);
+        invoiceResponse.setTaxRate(taxRate);
+        invoiceResponse.setShippingCharge(shippingCharge);
+        invoiceResponse.setFinalAmount(finalAmount);
+
         invoiceResponse.setPaymentMethod(entity.getPaymentMethod());
         invoiceResponse.setInvoiceState(entity.getInvoiceState().getValue());
         invoiceResponse.setIsArchive(entity.getIsArchive());

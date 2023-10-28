@@ -16,13 +16,15 @@ import java.util.List;
 public class InvoiceResponse {
     public Long id;
     String orderId;
-    Integer quantity;
+
     Double unitPrice;
+    Double discountRate;
+    Integer quantity;
+    Double discountedAmount;
+    Double taxRate;
     Double shippingCharge;
-    Double discountAmount;
-    Double totalAmount;
-    Double tax;
-    Double finalAmount;
+    Double FinalAmount;
+
     String paymentMethod;
     String invoiceState;
 //    UserResponse buyerId;

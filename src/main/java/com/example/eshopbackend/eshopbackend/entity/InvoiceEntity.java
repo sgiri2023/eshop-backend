@@ -27,22 +27,13 @@ public class InvoiceEntity implements Serializable {
     @Column(name = "ID")
     private Long id;
 
-    // OD21232312123
     private String orderId;
 
-    Integer quantity;
-
     Double unitPrice;
-
+    Double discountRate;
+    Integer quantity;
+    Double taxRate;
     Double shippingCharge;
-
-    Double discountAmount;
-
-    Double totalAmount;
-
-    Double tax;
-
-    Double finalAmount;
 
     @Column(length = 20)
     @Enumerated(value = EnumType.STRING)

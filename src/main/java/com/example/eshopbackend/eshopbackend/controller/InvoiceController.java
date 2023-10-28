@@ -32,6 +32,17 @@ public class InvoiceController {
         return new ResponseEntity<>(invoiceService.createInvoice(request, sessionData.getUserId()), HttpStatus.OK);
     }
 
+    // http://localhost:8090/api/invoice/create-bulk
+    @PostMapping("/create-bulk")
+    public ResponseEntity<?> createBulkInvoice(@RequestHeader String Authorization, @RequestBody OrderRequest request){
+        System.out.println("Add Product request: " + request);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(invoiceService.createBulkInvoice(request, sessionData.getUserId()), HttpStatus.OK);
+    }
+
     // Get Address
     // http://localhost:8090/api/invoice/buyer/get-invoice-list
     @GetMapping("/buyer/get-invoice-list")
