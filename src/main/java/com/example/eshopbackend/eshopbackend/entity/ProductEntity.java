@@ -36,7 +36,7 @@ public class ProductEntity implements Serializable {
 
     private Double ratings;
 
-    private Double discountedPrice;
+    // private Double discountedPrice;
 
     private String pictureUrl;
 

@@ -30,7 +30,7 @@ public class ProductModelConverter {
         double actualPrice = request.getActualPrice();
         double discountRate = request.getDiscountRate();
         double discountedPrice = actualPrice - actualPrice*discountRate/100;
-        productEntity.setDiscountedPrice(discountedPrice);
+        // productEntity.setDiscountedPrice(discountedPrice);
 
         productEntity.setStockCount(request.getStockCount());
         productEntity.setRatings(request.getRatings());
@@ -50,7 +50,12 @@ public class ProductModelConverter {
         response.setDescription(entity.getDescription());
         response.setActualPrice(entity.getActualPrice());
         response.setDiscountRate(entity.getDiscountRate());
-        response.setDiscountedPrice(entity.getDiscountedPrice());
+
+        double actualPrice = entity.getActualPrice();
+        double discountRate = entity.getDiscountRate();
+        double discountedPrice = actualPrice - actualPrice*discountRate/100;
+        response.setDiscountedPrice(discountedPrice);
+
         response.setStockCount(entity.getStockCount());
         response.setRatings(entity.getRatings());
         response.setSellerId(entity.getSellerEntity().getId());
