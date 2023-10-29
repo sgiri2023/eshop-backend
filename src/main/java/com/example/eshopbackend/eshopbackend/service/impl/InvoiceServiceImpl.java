@@ -50,10 +50,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Value("${admin.processsingWalletBankId}")
     private Long adminProcessingBankId;
 
+    @Override
     public String createBulkInvoice(OrderRequest orderRequest, Long buyerId){
        List<InvoiceRequest> invoiceRequestList = orderRequest.getInvoiceRequestList();
         Optional<UserEntity> optionalBuyerEntity = userRepository.findById(buyerId);
-
 
         if(optionalBuyerEntity.isPresent()) {
             // get buyer bank Details
@@ -79,7 +79,6 @@ public class InvoiceServiceImpl implements InvoiceService {
                     Double taxRate = invoiceRequest.getTaxRate();
                     Double shippingCharge = invoiceRequest.getShippingCharge();
                     Double FinalInvoiceAmount = shippingCharge + discountedAmount*(100 + taxRate)/100;
-
 
                     if(buyerBankBalance > FinalInvoiceAmount) {
                         System.out.println("Buyer Bank Balance -and- Invoice Amount: " + buyerBankBalance + " -and- " + FinalInvoiceAmount);
