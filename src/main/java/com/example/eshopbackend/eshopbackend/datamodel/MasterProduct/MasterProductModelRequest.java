@@ -23,6 +23,9 @@ public class MasterProductModelRequest {
     private Date createdDate;
     private Date lastModifiedDate;
     private Boolean isArchive;
+    private String categoryName;
+    private String subCategoryName;
+    private String brandName;
     private Long masterProductCategoryId;
     private Long masterProductSubCategoryId;
     private Long masterProductBrandId;

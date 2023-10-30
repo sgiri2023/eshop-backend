@@ -191,6 +191,9 @@ public class MasterProductServiceImpl implements MasterProductService {
                 tempMasterProductModelRequest.setCreatedDate(masterProductModelEntity.getCreatedDate());
                 tempMasterProductModelRequest.setLastModifiedDate(masterProductModelEntity.getLastModifiedDate());
                 tempMasterProductModelRequest.setIsArchive(masterProductModelEntity.getIsArchive());
+                tempMasterProductModelRequest.setCategoryName(masterProductModelEntity.getMasterProductCategoryEntity().getDisplayName());
+                tempMasterProductModelRequest.setSubCategoryName(masterProductModelEntity.getMasterProductSubCategoryEntity().getDisplayName());
+                tempMasterProductModelRequest.setBrandName(masterProductModelEntity.getMasterProductBrandEntity().getBrnadName());
                 tempMasterProductModelRequest.setMasterProductCategoryId(masterProductModelEntity.getMasterProductCategoryEntity().getId());
                 tempMasterProductModelRequest.setMasterProductSubCategoryId(masterProductModelEntity.getMasterProductSubCategoryEntity().getId());
                 tempMasterProductModelRequest.setMasterProductBrandId(masterProductModelEntity.getMasterProductBrandEntity().getId());
