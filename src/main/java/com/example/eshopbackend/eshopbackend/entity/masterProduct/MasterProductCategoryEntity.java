@@ -34,12 +34,12 @@ public class MasterProductCategoryEntity implements Serializable {
     @Column(columnDefinition = "boolean default false")
     private Boolean isArchive;
 
-    @OneToMany(mappedBy = "masterProductCategoryEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "masterProductCategoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<MasterProductSubCategoryEntity> masterProductSubCategoryEntityList;
 
-    @OneToMany(mappedBy = "masterProductCategoryEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "masterProductCategoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<MasterProductBrandEntity> masterProductBrandEntityList;
 
-    @OneToMany(mappedBy = "masterProductCategoryEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "masterProductCategoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<MasterProductModelEntity> masterProductModelEntityList;
 }

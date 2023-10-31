@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductModelEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,23 +25,20 @@ public class ProductEntity implements Serializable {
     @Column(name = "ID")
     private Long id;
 
-    private String name;
+    // private String name;
 
-    private String description;
-
-    private Integer stockCount;
-
-    private Double actualPrice;
-
-    private Double discountRate;
-
-    private Double ratings;
+    // private Double actualPrice;
 
     // private Double discountedPrice;
 
-    private String pictureUrl;
+    // private String pictureUrl;
 
+    private Double discountRate;
+    private Double shippingCharge;
     private Integer deliveryDays;
+    private String description;
+    private Integer stockCount;
+    private Double ratings;
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
@@ -48,6 +46,10 @@ public class ProductEntity implements Serializable {
 
     @OneToOne(mappedBy = "productEntity")
     private InvoiceEntity invoiceEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_model_id")
+    MasterProductModelEntity masterProductModelEntity;
 
     @CreatedDate
     @Column(name = "created_date")
@@ -64,6 +66,12 @@ public class ProductEntity implements Serializable {
         }
         if (stockCount == null) {
             stockCount = 0;
+        }
+        if(discountRate == null){
+            discountRate=0.0;
+        }
+        if(shippingCharge == null){
+            shippingCharge = 0.0;
         }
     }
 }

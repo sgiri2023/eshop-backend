@@ -6,12 +6,13 @@ import com.example.eshopbackend.eshopbackend.datamodel.ProductResponse;
 import com.example.eshopbackend.eshopbackend.entity.AddressEntity;
 import com.example.eshopbackend.eshopbackend.entity.ProductEntity;
 import com.example.eshopbackend.eshopbackend.entity.UserEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductModelEntity;
 
 import java.util.Date;
 
 public class ProductModelConverter {
 
-    public static ProductEntity requestToEntity(ProductRequest request, UserEntity userEntity){
+    public static ProductEntity requestToEntity(ProductRequest request, UserEntity userEntity, MasterProductModelEntity masterProductModelEntity){
 
         ProductEntity productEntity = new ProductEntity();
 
@@ -21,23 +22,18 @@ public class ProductModelConverter {
         if (userEntity != null) {
             productEntity.setSellerEntity(userEntity);
         }
+        if (masterProductModelEntity != null) {
+            productEntity.setMasterProductModelEntity(masterProductModelEntity);
+        }
 
-        productEntity.setName(request.getName());
-        productEntity.setDescription(request.getName());
-        productEntity.setActualPrice(request.getActualPrice());
         productEntity.setDiscountRate(request.getDiscountRate());
-
-        double actualPrice = request.getActualPrice();
-        double discountRate = request.getDiscountRate();
-        double discountedPrice = actualPrice - actualPrice*discountRate/100;
-        // productEntity.setDiscountedPrice(discountedPrice);
-
+        productEntity.setDeliveryDays(request.getDeliveryDays());
+        productEntity.setShippingCharge(request.getShippingCharge());
+        productEntity.setDescription(request.getDescription());
         productEntity.setStockCount(request.getStockCount());
         productEntity.setRatings(request.getRatings());
-        productEntity.setPictureUrl(request.getPictureUrl());
-        productEntity.setCreatedDate(new Date());
-        productEntity.setLastModifiedDate(new Date());
-        productEntity.setDeliveryDays(request.getDeliveryDays());
+        productEntity.setCreatedDate(request.getCreatedDate());
+        productEntity.setLastModifiedDate(request.getLastModifyDate());
 
         return productEntity;
     }
@@ -47,23 +43,45 @@ public class ProductModelConverter {
         if(entity.getId() != null){
             response.setId(entity.getId());
         }
-        response.setName(entity.getName());
+        if(entity.getSellerEntity() != null){
+            response.setSellerId(entity.getSellerEntity().getId());
+            response.setSellerName(entity.getSellerEntity().getFirstName() + " " + entity.getSellerEntity().getLastName());
+        }
+
+        Double marketRatePrice = 0.0;
+
+        if(entity.getMasterProductModelEntity() != null){
+            MasterProductModelEntity masterProductModelEntity = entity.getMasterProductModelEntity();
+
+            response.setMasterProductModelId(masterProductModelEntity.getId());
+            response.setModelName(masterProductModelEntity.getModelName());
+            response.setVariant(masterProductModelEntity.getVariant());
+            response.setProductImageUrl(masterProductModelEntity.getProductImageUrl());
+            response.setCategoryName(masterProductModelEntity.getMasterProductCategoryEntity().getDisplayName());
+            response.setSubCategoryName(masterProductModelEntity.getMasterProductSubCategoryEntity().getDisplayName());
+            response.setBrandName(masterProductModelEntity.getMasterProductBrandEntity().getBrnadName());
+            response.setMasterProductCategoryId(masterProductModelEntity.getMasterProductCategoryEntity().getId());
+            response.setMasterProductCategoryId(masterProductModelEntity.getMasterProductSubCategoryEntity().getId());
+            response.setMasterProductBrandId(masterProductModelEntity.getMasterProductBrandEntity().getId());
+
+            marketRatePrice = masterProductModelEntity.getMarketRatePrice();
+        }
+
         response.setDescription(entity.getDescription());
-        response.setActualPrice(entity.getActualPrice());
-        response.setDiscountRate(entity.getDiscountRate());
-
-        double actualPrice = entity.getActualPrice();
-        double discountRate = entity.getDiscountRate();
-        double discountedPrice = actualPrice - actualPrice*discountRate/100;
-        response.setDiscountedPrice(discountedPrice);
-
-        response.setStockCount(entity.getStockCount());
         response.setRatings(entity.getRatings());
-        response.setSellerId(entity.getSellerEntity().getId());
-        response.setSellerName(entity.getSellerEntity().getFirstName() + " " + entity.getSellerEntity().getLastName());
-        response.setPictureUrl(entity.getPictureUrl());
+        Double discountRate = entity.getDiscountRate();
+        Double discountedPrice = marketRatePrice - marketRatePrice*discountRate/100;
+        response.setMarketRatePrice(marketRatePrice);
+        response.setDiscountRate(discountRate);
+        response.setDiscountedPrice(discountedPrice);
+        response.setShippingCharges(entity.getShippingCharge());
+
         response.setDeliveryDays(entity.getDeliveryDays());
-        response.setCreatedDate(new Date());
+        response.setStockCount(entity.getStockCount());
+
+        response.setSellerId(entity.getSellerEntity().getId());
+        response.setCreatedDate(entity.getCreatedDate());
+        response.setLastModifyDate(entity.getLastModifiedDate());
 
         return response;
     }

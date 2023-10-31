@@ -142,6 +142,7 @@ public class MasterProductServiceImpl implements MasterProductService {
                 tempMasterProductSubCategoryRequest.setDisplayName(masterProductSubCategoryEntity.getDisplayName());
                 tempMasterProductSubCategoryRequest.setCreatedDate(masterProductSubCategoryEntity.getCreatedDate());
                 tempMasterProductSubCategoryRequest.setIsArchive(masterProductSubCategoryEntity.getIsArchive());
+                tempMasterProductSubCategoryRequest.setCategoryName(masterProductSubCategoryEntity.getMasterProductCategoryEntity().getDisplayName());
                 tempMasterProductSubCategoryRequest.setMasterProductCategoryId(masterProductSubCategoryEntity.getMasterProductCategoryEntity().getId());
                 masterProductSubCategoryRequestList.add(tempMasterProductSubCategoryRequest);
             }
@@ -164,6 +165,8 @@ public class MasterProductServiceImpl implements MasterProductService {
                 tempMasterProductBrandRequest.setLastModifiedDate(masterProductBrandEntity.getLastModifiedDate());
                 tempMasterProductBrandRequest.setManufacturerDetails(masterProductBrandEntity.getManufacturerDetails());
                 tempMasterProductBrandRequest.setIsArchive(masterProductBrandEntity.getIsArchive());
+                tempMasterProductBrandRequest.setCategoryName(masterProductBrandEntity.getMasterProductCategoryEntity().getDisplayName());
+                tempMasterProductBrandRequest.setSubCategoryName(masterProductBrandEntity.getMasterProductSubCategoryEntity().getDisplayName());
                 tempMasterProductBrandRequest.setMasterProductCategoryId(masterProductBrandEntity.getMasterProductCategoryEntity().getId());
                 tempMasterProductBrandRequest.setMasterProductSubCategoryId(masterProductBrandEntity.getMasterProductSubCategoryEntity().getId());
                 masterProductBrandRequestList.add(tempMasterProductBrandRequest);

@@ -38,9 +38,9 @@ public class MasterProductSubCategoryEntity implements Serializable {
     @JoinColumn(name = "product_catergory_id")
     MasterProductCategoryEntity masterProductCategoryEntity;
 
-    @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<MasterProductBrandEntity> masterProductBrandEntityList;
 
-    @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    List<MasterProductModelEntity> masterProductModelEntityList;
+//    @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    List<MasterProductModelEntity> masterProductModelEntityList;
 }

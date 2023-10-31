@@ -20,6 +20,8 @@ public class MasterProductBrandRequest {
     private Date createdDate;
     private Date lastModifiedDate;
     private Boolean isArchive;
+    private String categoryName;
+    private String subCategoryName;
     private Long masterProductCategoryId;
     private Long masterProductSubCategoryId;
 }

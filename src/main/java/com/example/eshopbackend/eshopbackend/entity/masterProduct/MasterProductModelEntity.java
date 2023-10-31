@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.entity.masterProduct;
 
+import com.example.eshopbackend.eshopbackend.entity.ProductEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -7,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "maste_product_model")
@@ -57,4 +59,7 @@ public class MasterProductModelEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_brand_id")
     MasterProductBrandEntity masterProductBrandEntity;
+
+    @OneToMany(mappedBy = "masterProductModelEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<ProductEntity> productEntityList;
 }

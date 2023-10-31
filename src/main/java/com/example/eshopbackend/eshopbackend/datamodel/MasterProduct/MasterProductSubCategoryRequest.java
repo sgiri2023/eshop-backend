@@ -16,6 +16,7 @@ public class MasterProductSubCategoryRequest {
     // private String subCategoryCode;
     private String displayName;
     private Date createdDate;
+    private String categoryName;
     private Long masterProductCategoryId;
     private Boolean isArchive;
 }
