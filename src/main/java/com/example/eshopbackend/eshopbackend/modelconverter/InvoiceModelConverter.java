@@ -51,8 +51,6 @@ public class InvoiceModelConverter {
         invoiceEntity.setCreatedDate(new Date());
         invoiceEntity.setLastModifiedDate(new Date());
 
-
-
         return invoiceEntity;
     }
 

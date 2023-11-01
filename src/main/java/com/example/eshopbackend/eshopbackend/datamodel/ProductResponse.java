@@ -18,7 +18,7 @@ public class ProductResponse {
 
     private Double marketRatePrice;
     private Double discountRate;
-    private Double discountedPrice;
+    private Double priceAfterDiscount;
     private Double shippingCharges;
 
     private Integer deliveryDays;

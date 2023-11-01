@@ -73,7 +73,7 @@ public class ProductModelConverter {
         Double discountedPrice = marketRatePrice - marketRatePrice*discountRate/100;
         response.setMarketRatePrice(marketRatePrice);
         response.setDiscountRate(discountRate);
-        response.setDiscountedPrice(discountedPrice);
+        response.setPriceAfterDiscount(discountedPrice);
         response.setShippingCharges(entity.getShippingCharge());
 
         response.setDeliveryDays(entity.getDeliveryDays());
