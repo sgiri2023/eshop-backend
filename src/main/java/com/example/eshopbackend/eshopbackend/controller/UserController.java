@@ -81,6 +81,18 @@ public class UserController {
         return userService.getUserList();
     }
 
+    // http://localhost:8090/api/user/buyer-seller/list
+    @GetMapping("/buyer-seller/list")
+    public ResponseEntity<?> userListBuyerSeller(@RequestHeader String Authorization){
+        System.out.println("Inside User Details Controller");
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        System.out.println("Get User List");
+        return new ResponseEntity<>(userService.getAllSellerAndBuyerUserList(), HttpStatus.OK);
+    }
+
     // http://localhost:8090/api/user/details
     @GetMapping("/details")
     public Object getUserDetails(@RequestHeader String Authorization){

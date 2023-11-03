@@ -14,4 +14,5 @@ public interface InvoiceService {
     public String createBulkInvoice(OrderRequest orderRequest, Long buyerId);
     public InvoiceResponse updateInvoiceState(Long userId, Long invoiceId, InvoiceRequest invoiceRequest);
     public String processInvoicePaymentToSeller(Long invoiceId, InvoiceRequest invoiceRequest);
+    public String processRefundInvoicePaymentToUser(Long invoiceId, InvoiceRequest invoiceRequest);
 }

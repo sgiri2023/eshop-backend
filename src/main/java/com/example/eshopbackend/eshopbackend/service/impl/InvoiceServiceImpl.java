@@ -112,6 +112,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                             invoiceRequest.setPurchaseDate(new Date());
                             invoiceRequest.setCreatedDate(new Date());
                             invoiceRequest.setLastModifyDate(new Date());
+                            invoiceRequest.setIsInvoiceSettle(false);
 
                             // Save Invoice
                             invoiceEntity = InvoiceModelConverter.requestToEntity(invoiceRequest, optionalSellerEntity.get(), optionalBuyerEntity.get(), optionalProductEntity.isPresent() ? optionalProductEntity.get() : null, optionalAddressEntity.isPresent() ? optionalAddressEntity.get() : null);
@@ -371,6 +372,101 @@ public class InvoiceServiceImpl implements InvoiceService {
                 sellerBankEntity.setLastModifiedDate(new Date());
                 walletBankRepository.save(sellerBankEntity);
                 System.out.println("Funding Credit Completed for Seller Account");
+                return "Payment Successfull";
+            }
+        }
+        return "Payment Error";
+    }
+
+    @Override
+    public String processRefundInvoicePaymentToUser(Long invoiceId, InvoiceRequest invoiceRequest){
+
+        Optional<InvoiceEntity> optionalInvoiceEntity = invoiceRepository.findById(invoiceId);
+        InvoiceEntity invoiceEntity = new InvoiceEntity();
+        System.out.println(".......Invoice Id: " + invoiceId);
+        System.out.println("Invoice Present: " + optionalInvoiceEntity.isPresent());
+        System.out.println("Invoice State: "+ optionalInvoiceEntity.get().getIsInvoiceSettle());
+        System.out.println("Invoice State: "+ invoiceRequest.getInvoiceState().toUpperCase().trim() +" "+ InvoiceStateCode.get("ORDER_CANCELLED"));
+        if (optionalInvoiceEntity.isPresent() && optionalInvoiceEntity.get().getIsInvoiceSettle() == false) {
+
+            System.out.println("Start Processing");
+            invoiceEntity = optionalInvoiceEntity.get();
+
+            // Process Payment To User Account
+            System.out.println("Process Amount Transafer to User Account");
+            Optional<WallerBankEntity> optionalAdminProcessingBankAccount = walletBankRepository.findById(adminProcessingBankId);
+            List<WallerBankEntity> userBankEntityList = walletBankRepository.findByUserEntity(optionalInvoiceEntity.get().getBuyerEntity());
+            if(userBankEntityList.isEmpty() && optionalAdminProcessingBankAccount.isPresent()){
+                return "Bank Account Not Found";
+            } else{
+                System.out.println("Bank Found");
+            }
+            WallerBankEntity userBankEntity = userBankEntityList.get(0);
+            WallerBankEntity adminProcessingBankEntity = optionalAdminProcessingBankAccount.get();
+
+            Double adminProcessingBankbalance = adminProcessingBankEntity.getBalance();
+            Double sellerBankBalance = userBankEntity.getBalance();
+
+            Double unitPrice = invoiceEntity.getUnitPrice();
+            Double discountRate = invoiceEntity.getDiscountRate();
+            Integer quantity = invoiceEntity.getQuantity();
+            Double discountedAmount = unitPrice*(1-discountRate/100)* quantity;
+            Double taxRate = invoiceEntity.getTaxRate();
+            Double shippingCharge = invoiceEntity.getShippingCharge();
+            Double FinalInvoiceAmount = shippingCharge + discountedAmount*(100 + taxRate)/100;
+            System.out.println("Admin Processing Bank Balance: " + adminProcessingBankbalance);
+            System.out.println("Seller Bank Balance" + sellerBankBalance);
+            System.out.println("Final Invoice Amount: " + FinalInvoiceAmount);
+            if(adminProcessingBankbalance >= FinalInvoiceAmount) {
+
+                invoiceEntity.setInvoiceState(InvoiceStateCode.valueOf(invoiceRequest.getInvoiceState().toUpperCase().trim()));
+                invoiceEntity.setLastModifiedDate(new Date());
+                invoiceEntity.setIsInvoiceSettle(true);
+                invoiceRepository.save(invoiceEntity);
+                System.out.println("Invoice Updated");
+
+                // Add Audit trail
+                AuditTrailEntity auditTrailEntity = new AuditTrailEntity();
+                auditTrailEntity = AuditTrailModelConverter.requestToEntity(invoiceEntity, InvoiceStateCode.valueOf(invoiceRequest.getInvoiceState().toUpperCase().trim()));
+                auditTrailRepository.save(auditTrailEntity);
+                System.out.println("Audit Trail Added");
+
+                // Process Funding Debit from Admin Processing bank Account
+                TransactionRequest transactionRequest = new TransactionRequest();
+                TransactionEntity transactionEntity = new TransactionEntity();
+                String transactionRefNo = utils.generateTransactionId();
+
+                System.out.println("Initiating Funding Debit from Admin Processing account");
+                transactionRequest.setReferenceNo(transactionRefNo);
+                transactionRequest.setAmount(FinalInvoiceAmount);
+                transactionRequest.setTransactionType("WALLET_DEBIT");
+                transactionRequest.setTransactionStatus("COMPLETED");
+                transactionRequest.setDescription(invoiceEntity.getOrderId() + " " + "Order Refund");
+                transactionRequest.setPaymentMethod(invoiceEntity.getPaymentMethod());
+                transactionRequest.setInvoiceId(invoiceEntity.getId());
+                transactionRequest.setToUserId(userBankEntity.getUserEntity().getId());
+
+                transactionEntity = TransactionModelConverter.requestToEntity(transactionRequest, adminProcessingBankEntity.getUserEntity(), adminProcessingBankEntity, userBankEntity, invoiceEntity);
+                transactionRepository.save(transactionEntity);
+                // Debit invoice amount from Admin Processing bank account
+                adminProcessingBankEntity.setBalance(adminProcessingBankbalance - FinalInvoiceAmount);
+                adminProcessingBankEntity.setLastModifiedDate(new Date());
+                walletBankRepository.save(adminProcessingBankEntity);
+                System.out.println("Funding Debit Completed from Admin Processing bank Account");
+
+                // Process Funding Credit To user Account
+                System.out.println("Initiating Funding Credit");
+                transactionRequest.setTransactionType("WALLET_CREDIT");
+                transactionRequest.setTransactionStatus("COMPLETED");
+
+                transactionEntity = TransactionModelConverter.requestToEntity(transactionRequest, userBankEntity.getUserEntity(), adminProcessingBankEntity, userBankEntity, invoiceEntity);
+                transactionRepository.save(transactionEntity);
+                // Credit invoice amount to user Bank Account
+                userBankEntity.setBalance(sellerBankBalance + FinalInvoiceAmount);
+                userBankEntity.setLastModifiedDate(new Date());
+                walletBankRepository.save(userBankEntity);
+                System.out.println("Funding Credit Completed for user Account");
+
                 return "Payment Successfull";
             }
         }

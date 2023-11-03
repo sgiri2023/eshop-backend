@@ -104,4 +104,16 @@ public class InvoiceController {
         String updateInvoice = invoiceService.processInvoicePaymentToSeller(invoiceId, request);
         return new ResponseEntity<>(updateInvoice, HttpStatus.OK);
     }
+
+    // http://localhost:8090/api/invoice/refund/{invoiceId}
+    @PutMapping("/refund/{invoiceId}")
+    public ResponseEntity<?> refundInvoicePayment(@RequestHeader String Authorization, @PathVariable(value = "invoiceId") Long invoiceId, @RequestBody InvoiceRequest request){
+        System.out.println("Refund Invocie Payment: " + request);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        String updateInvoice = invoiceService.processRefundInvoicePaymentToUser(invoiceId, request);
+        return new ResponseEntity<>(updateInvoice, HttpStatus.OK);
+    }
 }

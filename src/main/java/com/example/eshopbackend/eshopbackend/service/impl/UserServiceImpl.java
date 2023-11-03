@@ -90,6 +90,18 @@ public class UserServiceImpl implements UserService {
         return userReponseList;
     }
 
+    @Override
+    public List<UserResponse> getAllSellerAndBuyerUserList(){
+        List<UserEntity> userEntityList = userRepository.findByIsAdmin(false);
+        List<UserResponse> userReponseList = new ArrayList<>();
+        if(!userEntityList.isEmpty()){
+            for(UserEntity user : userEntityList){
+                userReponseList.add(UserModelConverter.entityToResponse(user));
+            }
+        }
+        return userReponseList;
+    }
+
     public UserResponse getUserByUserName(String userName){
         Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(userName);
         if (optionalUserEntity.isPresent()) {
