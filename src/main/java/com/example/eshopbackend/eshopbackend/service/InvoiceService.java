@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface InvoiceService {
     public InvoiceResponse createInvoice(InvoiceRequest invoiceRequest, Long buyerId);
-    public List<InvoiceResponse> getAllBuyerInvoice(Long userId);
-    public List<InvoiceResponse> getAllSellerInvoice(Long userId);
+    public List<InvoiceResponse> getAllBuyerInvoice(Long buyerId);
+    public List<InvoiceResponse> getAllSellerInvoice(Long sellerId);
+    public List<InvoiceResponse> getAllInvoices();
     public String createBulkInvoice(OrderRequest orderRequest, Long buyerId);
+    public InvoiceResponse updateInvoiceState(Long userId, Long invoiceId, InvoiceRequest invoiceRequest);
+    public String processInvoicePaymentToSeller(Long invoiceId, InvoiceRequest invoiceRequest);
 }

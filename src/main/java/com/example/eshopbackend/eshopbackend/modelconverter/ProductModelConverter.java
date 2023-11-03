@@ -61,7 +61,7 @@ public class ProductModelConverter {
             response.setSubCategoryName(masterProductModelEntity.getMasterProductSubCategoryEntity().getDisplayName());
             response.setBrandName(masterProductModelEntity.getMasterProductBrandEntity().getBrnadName());
             response.setMasterProductCategoryId(masterProductModelEntity.getMasterProductCategoryEntity().getId());
-            response.setMasterProductCategoryId(masterProductModelEntity.getMasterProductSubCategoryEntity().getId());
+            response.setMasterProductSubCategoryId(masterProductModelEntity.getMasterProductSubCategoryEntity().getId());
             response.setMasterProductBrandId(masterProductModelEntity.getMasterProductBrandEntity().getId());
 
             marketRatePrice = masterProductModelEntity.getMarketRatePrice();

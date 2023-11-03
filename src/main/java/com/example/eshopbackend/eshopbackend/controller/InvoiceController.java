@@ -69,15 +69,39 @@ public class InvoiceController {
         return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
     }
 
+    // http://localhost:8090/api/invoice/admin/get-invoice-list
+    @GetMapping("/admin/get-invoice-list")
+    public ResponseEntity<?> getAdminInvoiceList(@RequestHeader String Authorization){
+        System.out.println("Get Admin All invoice List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        List<InvoiceResponse> invoiceResponsesList = invoiceService.getAllInvoices();
+        return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
+    }
+
     // http://localhost:8090/api/invoice/update-state/{invoiceId}
     @PutMapping("/update-state/{invoiceId}")
     public ResponseEntity<?> updateInvoiceState(@RequestHeader String Authorization, @PathVariable(value = "invoiceId") Long invoiceId, @RequestBody InvoiceRequest request){
-        System.out.println("Get user address List: " + Authorization);
+        System.out.println("Update Invoice State: " + request);
         SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
         if (sessionData == null) {
             return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
         }
         InvoiceResponse updateInvoice = invoiceService.updateInvoiceState(sessionData.getUserId(), invoiceId, request);
+        return new ResponseEntity<>(updateInvoice, HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/invoice/make-payment/{invoiceId}
+    @PutMapping("/make-payment/{invoiceId}")
+    public ResponseEntity<?> settleInvoicePayment(@RequestHeader String Authorization, @PathVariable(value = "invoiceId") Long invoiceId, @RequestBody InvoiceRequest request){
+        System.out.println("Make Invocie Payment: " + request);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        String updateInvoice = invoiceService.processInvoicePaymentToSeller(invoiceId, request);
         return new ResponseEntity<>(updateInvoice, HttpStatus.OK);
     }
 }

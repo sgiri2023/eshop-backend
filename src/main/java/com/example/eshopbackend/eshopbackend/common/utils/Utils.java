@@ -31,6 +31,11 @@ public class Utils {
         return this.timeBasedId(startString);
     }
 
+    public String generateInvoiceNo(){
+        String startString = "ESHOPIN";
+        return this.timeBasedId(startString);
+    }
+
     public Date addDays(Date date, Long numberOfDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);

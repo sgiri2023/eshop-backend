@@ -16,6 +16,7 @@ import java.util.List;
 public class InvoiceResponse {
     public Long id;
     String orderId;
+    String invoiceNo;
 
     Double unitPrice;
     Double discountRate;
@@ -27,12 +28,16 @@ public class InvoiceResponse {
 
     String paymentMethod;
     String invoiceState;
+    Boolean isInvoiceSettle;
 //    UserResponse buyerId;
 //    UserResponse sellerId;
+    String buyerName;
     ProductResponse productResponse;
     AddressRequest addressRequest;
     List<AuditResponse> auditResponseList;
     Boolean isArchive;
     Date purchaseDate;
     Date deliveryDate;
+    Date createdDate;
+    Date lastModifyDate;
 }
