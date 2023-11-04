@@ -1,6 +1,7 @@
 package com.example.eshopbackend.eshopbackend.controller;
 
 import com.example.eshopbackend.eshopbackend.datamodel.*;
+import com.example.eshopbackend.eshopbackend.datamodel.Dataset.TotalOrder;
 import com.example.eshopbackend.eshopbackend.service.impl.InvoiceServiceImpl;
 import com.example.eshopbackend.eshopbackend.session.SessionDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,30 @@ public class InvoiceController {
         }
         List<InvoiceResponse> invoiceResponsesList = invoiceService.getAllInvoices();
         return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/invoice/betweenDates/get-invoice-list/{month}
+    @GetMapping("/betweenDates/get-invoice-list/{month}")
+    public ResponseEntity<?> getAllInvoiceBetweenDates(@RequestHeader String Authorization, @PathVariable(value = "month") Integer month){
+        System.out.println("Get Admin All invoice List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        Integer invoiceResponsesList = 0; //invoiceService.getAllInvoiceBetweenDates(month, 2023);
+        return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/invoice/dataset/monthwise
+    @GetMapping("/dataset/monthwise")
+    public ResponseEntity<?> datasetgetMonthWiseTotalOrder(@RequestHeader String Authorization){
+        System.out.println("Get Admin All invoice List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        TotalOrder datasetInvoiceResponsesList = invoiceService.datasetGetMonthwiseTotalOrder(sessionData.getUserId());
+        return new ResponseEntity<>(datasetInvoiceResponsesList, HttpStatus.OK);
     }
 
     // http://localhost:8090/api/invoice/update-state/{invoiceId}

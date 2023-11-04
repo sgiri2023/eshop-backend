@@ -2,6 +2,7 @@ package com.example.eshopbackend.eshopbackend.service.impl;
 
 import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
 import com.example.eshopbackend.eshopbackend.common.utils.Utils;
+import com.example.eshopbackend.eshopbackend.datamodel.Dataset.TotalOrder;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceResponse;
 import com.example.eshopbackend.eshopbackend.datamodel.OrderRequest;
@@ -16,10 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -257,6 +256,70 @@ public class InvoiceServiceImpl implements InvoiceService {
             }
         }
         return invoiceListResponse;
+    }
+
+    public Integer getAllInvoiceBetweenDates(Integer month, Integer year){
+
+        Date monthStart = utils.getFirstDateOfMonth(month, year);
+        Date monthEnd = utils.getEndDateOfMonth(month, year);
+
+        System.out.println("Calculated month start date : " + monthStart);
+        System.out.println("Calculated month end date : " + monthEnd);
+
+        List<InvoiceEntity> invoiceEnttiyList = invoiceRepository.getAllInvoiceBetweenDates(monthStart, monthEnd);
+        Integer invoiceCount = invoiceEnttiyList.size();
+        System.out.println(".......Invoice Count: " + invoiceCount);
+
+        return invoiceCount;
+    }
+
+    public Double calculateTotalInvoicePriceMonthWise(Integer month, Integer year){
+
+        Date monthStart = utils.getFirstDateOfMonth(month, year);
+        Date monthEnd = utils.getEndDateOfMonth(month, year);
+
+        System.out.println("Calculated month start date : " + monthStart);
+        System.out.println("Calculated month end date : " + monthEnd);
+
+        List<InvoiceEntity> invoiceEnttiyList = invoiceRepository.getAllInvoiceBetweenDates(monthStart, monthEnd);
+        Double totalInvoicePrice = 0.0;
+        for(InvoiceEntity invoiceEntity : invoiceEnttiyList){
+            InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoiceEntity);
+            totalInvoicePrice = totalInvoicePrice + invoiceResponse.getFinalAmount();
+        }
+
+        System.out.println(".......Total Invoice Price: " + totalInvoicePrice);
+        return totalInvoicePrice;
+    }
+
+    public TotalOrder datasetGetMonthwiseTotalOrder(Long userId){
+        List<String> monthList = new ArrayList<>();
+
+        TotalOrder totalOrderDataset = new TotalOrder();
+        List<Integer> invoiceCountList = new ArrayList<>();
+        List<Double> totalInvoicePriceList = new ArrayList<>();
+
+        Calendar gc = new GregorianCalendar();
+        gc.set(Calendar.YEAR, 2023);
+        gc.set(Calendar.MONTH, 6);
+        Date date = gc.getTime();
+
+        monthList = utils.getMonthListFromToCurrentDate(date);
+
+        for(String month : monthList){
+            String[] result = month.split("-");
+            Integer monthIndex= utils.getMonthNameFromMonthIndex(result[0]);
+            Integer invoiceCount = this.getAllInvoiceBetweenDates(monthIndex, Integer.parseInt(result[1]));
+            Double totalInvoicePrice = this.calculateTotalInvoicePriceMonthWise(monthIndex, Integer.parseInt(result[1]));
+            invoiceCountList.add(invoiceCount);
+            totalInvoicePriceList.add(totalInvoicePrice);
+        }
+        totalOrderDataset.setMonthList(monthList);
+        totalOrderDataset.setInvoiceCountList(invoiceCountList);
+        totalOrderDataset.setTotalMonthPriceList(totalInvoicePriceList);
+        System.out.println("Total order Dataset: " + totalOrderDataset);
+
+        return totalOrderDataset;
     }
 
     @Override
