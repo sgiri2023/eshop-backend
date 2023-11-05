@@ -258,67 +258,103 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceListResponse;
     }
 
-    public Integer getAllInvoiceBetweenDates(Integer month, Integer year){
+    public Integer getAllInvoiceBetweenDates(Long userId, Integer month, Integer year){
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
+        Integer invoiceCount = 0;
+        if(optionalUserEntity.isPresent()){
+            UserEntity userEntity = optionalUserEntity.get();
+            Date monthStart = utils.getFirstDateOfMonth(month, year);
+            Date monthEnd = utils.getEndDateOfMonth(month, year);
 
-        Date monthStart = utils.getFirstDateOfMonth(month, year);
-        Date monthEnd = utils.getEndDateOfMonth(month, year);
+            System.out.println("Calculated month start date : " + monthStart);
+            System.out.println("Calculated month end date : " + monthEnd);
 
-        System.out.println("Calculated month start date : " + monthStart);
-        System.out.println("Calculated month end date : " + monthEnd);
+            List<InvoiceEntity> invoiceEnttiyList = new ArrayList<>();
+            if(userEntity.getIsAdmin() == true){
+                System.out.println("1");
+                invoiceEnttiyList = invoiceRepository.getAllInvoiceBetweenDates(monthStart, monthEnd);
+            } else if(userEntity.getIsAdmin() == false && userEntity.getIsCustomer() == true){
+                System.out.println("2");
+                invoiceEnttiyList = invoiceRepository.getBuyerInvoiceBetweenDates(userEntity.getId(), monthStart, monthEnd);
+            }else if(userEntity.getIsAdmin() == false && userEntity.getIsCustomer() == false){
+                System.out.println("3");
+                invoiceEnttiyList = invoiceRepository.getSellerInvoiceBetweenDates(userEntity.getId(), monthStart, monthEnd);
+            }
 
-        List<InvoiceEntity> invoiceEnttiyList = invoiceRepository.getAllInvoiceBetweenDates(monthStart, monthEnd);
-        Integer invoiceCount = invoiceEnttiyList.size();
-        System.out.println(".......Invoice Count: " + invoiceCount);
-
+            invoiceCount = invoiceEnttiyList.size();
+            System.out.println(".......Invoice Count: " + invoiceCount);
+        }
         return invoiceCount;
     }
 
-    public Double calculateTotalInvoicePriceMonthWise(Integer month, Integer year){
-
-        Date monthStart = utils.getFirstDateOfMonth(month, year);
-        Date monthEnd = utils.getEndDateOfMonth(month, year);
-
-        System.out.println("Calculated month start date : " + monthStart);
-        System.out.println("Calculated month end date : " + monthEnd);
-
-        List<InvoiceEntity> invoiceEnttiyList = invoiceRepository.getAllInvoiceBetweenDates(monthStart, monthEnd);
+    public Double calculateTotalInvoicePriceMonthWise(Long userId, Integer month, Integer year){
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
         Double totalInvoicePrice = 0.0;
-        for(InvoiceEntity invoiceEntity : invoiceEnttiyList){
-            InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoiceEntity);
-            totalInvoicePrice = totalInvoicePrice + invoiceResponse.getFinalAmount();
-        }
 
+        if(optionalUserEntity.isPresent()) {
+
+            UserEntity userEntity = optionalUserEntity.get();
+            Date monthStart = utils.getFirstDateOfMonth(month, year);
+            Date monthEnd = utils.getEndDateOfMonth(month, year);
+
+            System.out.println("Calculated month start date : " + monthStart);
+            System.out.println("Calculated month end date : " + monthEnd);
+
+            List<InvoiceEntity> invoiceEnttiyList = new ArrayList<>();
+            if(userEntity.getIsAdmin() == true){
+                System.out.println("4");
+                invoiceEnttiyList = invoiceRepository.getAllInvoiceBetweenDates(monthStart, monthEnd);
+            } else if(userEntity.getIsAdmin() == false && userEntity.getIsCustomer() == true){
+                System.out.println("5");
+                invoiceEnttiyList = invoiceRepository.getBuyerInvoiceBetweenDates(userEntity.getId(), monthStart, monthEnd);
+            }else if(userEntity.getIsAdmin() == false && userEntity.getIsCustomer() == false){
+                System.out.println("6");
+                invoiceEnttiyList = invoiceRepository.getSellerInvoiceBetweenDates(userEntity.getId(), monthStart, monthEnd);
+            }
+
+            for (InvoiceEntity invoiceEntity : invoiceEnttiyList) {
+                InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoiceEntity);
+                totalInvoicePrice = totalInvoicePrice + invoiceResponse.getFinalAmount();
+            }
+
+        }
         System.out.println(".......Total Invoice Price: " + totalInvoicePrice);
         return totalInvoicePrice;
     }
 
     public TotalOrder datasetGetMonthwiseTotalOrder(Long userId){
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
         List<String> monthList = new ArrayList<>();
 
         TotalOrder totalOrderDataset = new TotalOrder();
-        List<Integer> invoiceCountList = new ArrayList<>();
-        List<Double> totalInvoicePriceList = new ArrayList<>();
+        if(optionalUserEntity.isPresent()) {
 
-        Calendar gc = new GregorianCalendar();
-        gc.set(Calendar.YEAR, 2023);
-        gc.set(Calendar.MONTH, 6);
-        Date date = gc.getTime();
+            List<Integer> invoiceCountList = new ArrayList<>();
+            List<Double> totalInvoicePriceList = new ArrayList<>();
+            Integer averageOrderPerMonth = 0;
+            Integer totalOrder = 0;
 
-        monthList = utils.getMonthListFromToCurrentDate(date);
+            UserEntity userEntity = optionalUserEntity.get();
+            monthList = utils.getMonthListFromToCurrentDate(userEntity.getCreatedDate());
 
-        for(String month : monthList){
-            String[] result = month.split("-");
-            Integer monthIndex= utils.getMonthNameFromMonthIndex(result[0]);
-            Integer invoiceCount = this.getAllInvoiceBetweenDates(monthIndex, Integer.parseInt(result[1]));
-            Double totalInvoicePrice = this.calculateTotalInvoicePriceMonthWise(monthIndex, Integer.parseInt(result[1]));
-            invoiceCountList.add(invoiceCount);
-            totalInvoicePriceList.add(totalInvoicePrice);
+            for (String month : monthList) {
+                String[] result = month.split("-");
+                Integer monthIndex = utils.getMonthNameFromMonthIndex(result[0]);
+                Integer invoiceCount = this.getAllInvoiceBetweenDates(userEntity.getId(), monthIndex, Integer.parseInt(result[1]));
+                Double totalInvoicePrice = this.calculateTotalInvoicePriceMonthWise(userEntity.getId(), monthIndex, Integer.parseInt(result[1]));
+                invoiceCountList.add(invoiceCount);
+                totalInvoicePriceList.add(totalInvoicePrice);
+                totalOrder = totalOrder + invoiceCount;
+            }
+            averageOrderPerMonth = totalOrder/invoiceCountList.size();
+
+            totalOrderDataset.setMonthList(monthList);
+            totalOrderDataset.setInvoiceCountList(invoiceCountList);
+            totalOrderDataset.setTotalMonthPriceList(totalInvoicePriceList);
+            totalOrderDataset.setAverageOrderPermonth(averageOrderPerMonth);
+            totalOrderDataset.setTotalOrder(totalOrder);
+            System.out.println("Total order Dataset: " + totalOrderDataset);
         }
-        totalOrderDataset.setMonthList(monthList);
-        totalOrderDataset.setInvoiceCountList(invoiceCountList);
-        totalOrderDataset.setTotalMonthPriceList(totalInvoicePriceList);
-        System.out.println("Total order Dataset: " + totalOrderDataset);
-
         return totalOrderDataset;
     }
 

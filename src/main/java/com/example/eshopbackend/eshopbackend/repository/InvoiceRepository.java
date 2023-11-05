@@ -28,4 +28,9 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
     @Query(value = "SELECT i.* from invoice AS i WHERE i.created_date BETWEEN :startDate AND :endDate", nativeQuery = true)
     List<InvoiceEntity> getAllInvoiceBetweenDates(@Param("startDate") Date startDate, @Param("endDate")Date endDate);
 
+    @Query(value = "SELECT i.* from invoice AS i WHERE i.buyer_id = :buyerId AND i.created_date BETWEEN :startDate AND :endDate", nativeQuery = true)
+    List<InvoiceEntity> getBuyerInvoiceBetweenDates(@Param("buyerId") Long buyerId, @Param("startDate") Date startDate, @Param("endDate")Date endDate);
+
+    @Query(value = "SELECT i.* from invoice AS i WHERE i.seller_id = :sellerId AND i.created_date BETWEEN :startDate AND :endDate", nativeQuery = true)
+    List<InvoiceEntity> getSellerInvoiceBetweenDates(@Param("sellerId") Long sellerId, @Param("startDate") Date startDate, @Param("endDate")Date endDate);
 }
