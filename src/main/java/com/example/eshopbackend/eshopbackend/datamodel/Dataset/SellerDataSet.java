@@ -9,11 +9,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TotalOrder {
-    List<String> monthList;
+public class SellerDataSet {
+    String label;
     List<Integer> invoiceCountList;
     List<Double> totalMonthPriceList;
     Integer averageOrderPermonth;
     Integer totalOrder;
-
 }

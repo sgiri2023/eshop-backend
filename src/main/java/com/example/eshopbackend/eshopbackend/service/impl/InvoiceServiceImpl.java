@@ -2,6 +2,8 @@ package com.example.eshopbackend.eshopbackend.service.impl;
 
 import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
 import com.example.eshopbackend.eshopbackend.common.utils.Utils;
+import com.example.eshopbackend.eshopbackend.datamodel.Dataset.SellerDataSet;
+import com.example.eshopbackend.eshopbackend.datamodel.Dataset.SellerProjectionDataset;
 import com.example.eshopbackend.eshopbackend.datamodel.Dataset.TotalOrder;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.InvoiceResponse;
@@ -356,6 +358,104 @@ public class InvoiceServiceImpl implements InvoiceService {
             System.out.println("Total order Dataset: " + totalOrderDataset);
         }
         return totalOrderDataset;
+    }
+
+    public SellerProjectionDataset getAllSellerOrderProjection(Long userId){
+        Optional<UserEntity> optionalAdminUserEntity = userRepository.findById(userId);
+        List<UserEntity> sellerEntityList = userRepository.findByIsAdminIsFalseAndIsCustomer(false);
+        System.out.println("Seller Projection"+optionalAdminUserEntity.isPresent() + "-"  + sellerEntityList.size());
+        SellerProjectionDataset sellerProjectionDataset = new SellerProjectionDataset();
+        List<SellerDataSet> sellerDatasetList = new ArrayList<>();
+        List<String> monthList = new ArrayList<>();
+
+        if(!sellerEntityList.isEmpty() && optionalAdminUserEntity.isPresent()){
+            UserEntity adminUserEntity = optionalAdminUserEntity.get();
+            monthList = utils.getMonthListFromToCurrentDate(adminUserEntity.getCreatedDate());
+
+            System.out.println("Seller List: "+ sellerEntityList.size());
+            for(UserEntity userEntity : sellerEntityList){
+                System.out.println("Seller: " + userEntity.getFirstName() + " " + userEntity.getLastName());
+                SellerDataSet sellerDataSet = new SellerDataSet();
+
+                List<Integer> invoiceCountList = new ArrayList<>();
+                List<Double> totalInvoicePriceList = new ArrayList<>();
+                Integer averageOrderPerMonth = 0;
+                Integer totalOrder = 0;
+
+                for (String month : monthList) {
+                    String[] result = month.split("-");
+                    Integer monthIndex = utils.getMonthNameFromMonthIndex(result[0]);
+                    Integer invoiceCount = this.getAllInvoiceBetweenDates(userEntity.getId(), monthIndex, Integer.parseInt(result[1]));
+                    Double totalInvoicePrice = this.calculateTotalInvoicePriceMonthWise(userEntity.getId(), monthIndex, Integer.parseInt(result[1]));
+                    invoiceCountList.add(invoiceCount);
+                    totalInvoicePriceList.add(totalInvoicePrice);
+                    totalOrder = totalOrder + invoiceCount;
+                }
+                averageOrderPerMonth = totalOrder/invoiceCountList.size();
+
+                sellerDataSet.setLabel(userEntity.getFirstName() + " " + userEntity.getLastName());
+                sellerDataSet.setInvoiceCountList(invoiceCountList);
+                sellerDataSet.setTotalMonthPriceList(totalInvoicePriceList);
+                sellerDataSet.setTotalOrder(totalOrder);
+                sellerDataSet.setAverageOrderPermonth(averageOrderPerMonth);
+
+                sellerDatasetList.add(sellerDataSet);
+            }
+            sellerProjectionDataset.setSellerDatasetList(sellerDatasetList);
+        }
+
+        sellerProjectionDataset.setMonthList(monthList);
+
+        return sellerProjectionDataset;
+    }
+
+    public SellerProjectionDataset getAllBuyerOrderProjection(Long userId){
+        Optional<UserEntity> optionalAdminUserEntity = userRepository.findById(userId);
+        List<UserEntity> sellerEntityList = userRepository.findByIsAdminIsFalseAndIsCustomer(true);
+        System.out.println("Buyer Projection"+optionalAdminUserEntity.isPresent() + "-"  + sellerEntityList.size());
+        SellerProjectionDataset sellerProjectionDataset = new SellerProjectionDataset();
+        List<SellerDataSet> sellerDatasetList = new ArrayList<>();
+        List<String> monthList = new ArrayList<>();
+
+        if(!sellerEntityList.isEmpty() && optionalAdminUserEntity.isPresent()){
+            UserEntity adminUserEntity = optionalAdminUserEntity.get();
+            monthList = utils.getMonthListFromToCurrentDate(adminUserEntity.getCreatedDate());
+
+            System.out.println("Seller List: "+ sellerEntityList.size());
+            for(UserEntity userEntity : sellerEntityList){
+                System.out.println("Seller: " + userEntity.getFirstName() + " " + userEntity.getLastName());
+                SellerDataSet sellerDataSet = new SellerDataSet();
+
+                List<Integer> invoiceCountList = new ArrayList<>();
+                List<Double> totalInvoicePriceList = new ArrayList<>();
+                Integer averageOrderPerMonth = 0;
+                Integer totalOrder = 0;
+
+                for (String month : monthList) {
+                    String[] result = month.split("-");
+                    Integer monthIndex = utils.getMonthNameFromMonthIndex(result[0]);
+                    Integer invoiceCount = this.getAllInvoiceBetweenDates(userEntity.getId(), monthIndex, Integer.parseInt(result[1]));
+                    Double totalInvoicePrice = this.calculateTotalInvoicePriceMonthWise(userEntity.getId(), monthIndex, Integer.parseInt(result[1]));
+                    invoiceCountList.add(invoiceCount);
+                    totalInvoicePriceList.add(totalInvoicePrice);
+                    totalOrder = totalOrder + invoiceCount;
+                }
+                averageOrderPerMonth = totalOrder/invoiceCountList.size();
+
+                sellerDataSet.setLabel(userEntity.getFirstName() + " " + userEntity.getLastName());
+                sellerDataSet.setInvoiceCountList(invoiceCountList);
+                sellerDataSet.setTotalMonthPriceList(totalInvoicePriceList);
+                sellerDataSet.setTotalOrder(totalOrder);
+                sellerDataSet.setAverageOrderPermonth(averageOrderPerMonth);
+
+                sellerDatasetList.add(sellerDataSet);
+            }
+            sellerProjectionDataset.setSellerDatasetList(sellerDatasetList);
+        }
+
+        sellerProjectionDataset.setMonthList(monthList);
+
+        return sellerProjectionDataset;
     }
 
     @Override

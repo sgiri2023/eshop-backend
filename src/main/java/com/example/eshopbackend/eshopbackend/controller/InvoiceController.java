@@ -1,6 +1,7 @@
 package com.example.eshopbackend.eshopbackend.controller;
 
 import com.example.eshopbackend.eshopbackend.datamodel.*;
+import com.example.eshopbackend.eshopbackend.datamodel.Dataset.SellerProjectionDataset;
 import com.example.eshopbackend.eshopbackend.datamodel.Dataset.TotalOrder;
 import com.example.eshopbackend.eshopbackend.service.impl.InvoiceServiceImpl;
 import com.example.eshopbackend.eshopbackend.session.SessionDataManager;
@@ -104,6 +105,30 @@ public class InvoiceController {
         }
         TotalOrder datasetInvoiceResponsesList = invoiceService.datasetGetMonthwiseTotalOrder(sessionData.getUserId());
         return new ResponseEntity<>(datasetInvoiceResponsesList, HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/invoice/dataset/seller/monthwise
+    @GetMapping("/dataset/seller/monthwise")
+    public ResponseEntity<?> datasetgetMonthWiseSellerProjection(@RequestHeader String Authorization){
+        System.out.println("Get Admin All invoice List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        SellerProjectionDataset dataset= invoiceService.getAllSellerOrderProjection(sessionData.getUserId());
+        return new ResponseEntity<>(dataset, HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/invoice/dataset/buyer/monthwise
+    @GetMapping("/dataset/buyer/monthwise")
+    public ResponseEntity<?> datasetgetMonthWiseBuyerProjection(@RequestHeader String Authorization){
+        System.out.println("Get Admin All invoice List: " + Authorization);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        SellerProjectionDataset dataset= invoiceService.getAllBuyerOrderProjection(sessionData.getUserId());
+        return new ResponseEntity<>(dataset, HttpStatus.OK);
     }
 
     // http://localhost:8090/api/invoice/update-state/{invoiceId}
