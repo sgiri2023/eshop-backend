@@ -33,4 +33,7 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
 
     @Query(value = "SELECT i.* from invoice AS i WHERE i.seller_id = :sellerId AND i.created_date BETWEEN :startDate AND :endDate", nativeQuery = true)
     List<InvoiceEntity> getSellerInvoiceBetweenDates(@Param("sellerId") Long sellerId, @Param("startDate") Date startDate, @Param("endDate")Date endDate);
+
+    @Query(value = "SELECT SUM(i.quantity) from invoice AS i WHERE i.product_id = :productId AND i.seller_id = :sellerId AND i.created_date BETWEEN :startDate AND :endDate", nativeQuery = true)
+    Long countQuantityByProductIdAndSellerIdAndInvoicedateBetweenDates(@Param("productId") Long productId, @Param("sellerId") Long sellerId, @Param("startDate") Date startDate, @Param("endDate")Date endDate);
 }

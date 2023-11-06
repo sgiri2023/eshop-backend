@@ -52,4 +52,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProductList(), HttpStatus.OK);
     }
 
+    // http://localhost:8090/api/product/projection/monthwise
+    @GetMapping("/projection/monthwise")
+    public ResponseEntity<?> getMonthWiseProductProjection(@RequestHeader String Authorization){
+        System.out.println("Get Month Wise Product Projection");
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(productService.getProductProjection(sessionData.getUserId()), HttpStatus.OK);
+    }
+
 }

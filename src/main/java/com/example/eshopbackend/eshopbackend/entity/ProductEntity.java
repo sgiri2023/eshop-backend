@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -44,8 +45,8 @@ public class ProductEntity implements Serializable {
     @JoinColumn(name = "seller_id")
     UserEntity sellerEntity;
 
-    @OneToOne(mappedBy = "productEntity")
-    private InvoiceEntity invoiceEntity;
+    @OneToMany(mappedBy = "productEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<InvoiceEntity> invoiceEntityList;
 
     @ManyToOne
     @JoinColumn(name = "master_product_model_id")
