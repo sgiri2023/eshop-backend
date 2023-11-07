@@ -75,6 +75,10 @@ public class InvoiceEntity implements Serializable {
     private Date purchaseDate;
 
     @CreatedDate
+    @Column(name = "delivered_date")
+    private Date deliveredDate;
+
+    @CreatedDate
     @Column(name = "delivery_date")
     private Date deliveryDate;
 
