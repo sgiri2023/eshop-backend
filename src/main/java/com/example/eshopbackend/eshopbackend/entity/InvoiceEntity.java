@@ -28,6 +28,7 @@ public class InvoiceEntity implements Serializable {
     private Long id;
 
     private String orderId;
+    private String invoieNo;
 
     Double unitPrice;
     Double discountRate;
@@ -35,12 +36,14 @@ public class InvoiceEntity implements Serializable {
     Double taxRate;
     Double shippingCharge;
 
-    @Column(length = 20)
+    @Column(length = 40)
     @Enumerated(value = EnumType.STRING)
     @NotNull
     InvoiceStateCode invoiceState;
 
     String paymentMethod;
+
+    Boolean isInvoiceSettle;
 
     @ManyToOne
     @JoinColumn(name = "buyer_id")
@@ -70,6 +73,10 @@ public class InvoiceEntity implements Serializable {
     @CreatedDate
     @Column(name = "purchase_date")
     private Date purchaseDate;
+
+    @CreatedDate
+    @Column(name = "delivered_date")
+    private Date deliveredDate;
 
     @CreatedDate
     @Column(name = "delivery_date")
