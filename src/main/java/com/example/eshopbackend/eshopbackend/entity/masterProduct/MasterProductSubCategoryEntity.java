@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.entity.masterProduct;
 
+import com.example.eshopbackend.eshopbackend.entity.ProductEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -39,8 +40,13 @@ public class MasterProductSubCategoryEntity implements Serializable {
     MasterProductCategoryEntity masterProductCategoryEntity;
 
     @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<MasterProductModelEntity> masterProductModelEntityList;
+
+    @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<MasterProductBrandEntity> masterProductBrandEntityList;
 
-//    @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    List<MasterProductModelEntity> masterProductModelEntityList;
+    @OneToMany(mappedBy = "masterProductSubCategoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<ProductEntity> productEntityList;
+
+
 }
