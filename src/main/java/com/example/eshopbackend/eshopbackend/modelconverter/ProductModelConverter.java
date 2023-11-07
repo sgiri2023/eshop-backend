@@ -24,6 +24,9 @@ public class ProductModelConverter {
         }
         if (masterProductModelEntity != null) {
             productEntity.setMasterProductModelEntity(masterProductModelEntity);
+            productEntity.setMasterProductBrandEntity(masterProductModelEntity.getMasterProductBrandEntity());
+            productEntity.setMasterProductSubCategoryEntity(masterProductModelEntity.getMasterProductSubCategoryEntity());
+            productEntity.setMasterProductCategoryEntity(masterProductModelEntity.getMasterProductCategoryEntity());
         }
 
         productEntity.setDiscountRate(request.getDiscountRate());

@@ -22,6 +22,9 @@ public class ProductRequest {
     private Date lastModifyDate;
 
     private Long masterProductModelId;
+    private Long masterProductBrandId;
+    private Long masterProductSubCategoryId;
+    private Long masterProductCategoryId;
 
     // private String name;
     // private Double actualPrice;

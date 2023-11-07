@@ -1,6 +1,9 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductBrandEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductCategoryEntity;
 import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductModelEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductSubCategoryEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -51,6 +54,18 @@ public class ProductEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "master_product_model_id")
     MasterProductModelEntity masterProductModelEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_brand_id")
+    MasterProductBrandEntity masterProductBrandEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_sub_catergory_id")
+    MasterProductSubCategoryEntity masterProductSubCategoryEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_catergory_id")
+    MasterProductCategoryEntity masterProductCategoryEntity;
 
     @CreatedDate
     @Column(name = "created_date")
