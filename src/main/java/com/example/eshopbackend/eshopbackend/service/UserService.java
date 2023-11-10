@@ -11,4 +11,5 @@ public interface UserService {
     public List<UserResponse> getUserList();
     public List<AddressRequest> addUserAddress(Long userId, AddressRequest addressRequest);
     public List<AddressRequest> getUserAddressList(Long userId);
+    public List<UserResponse> getAllSellerAndBuyerUserList();
 }

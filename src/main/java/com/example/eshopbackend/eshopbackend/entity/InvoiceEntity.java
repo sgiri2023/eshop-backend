@@ -1,6 +1,10 @@
 package com.example.eshopbackend.eshopbackend.entity;
 
 import com.example.eshopbackend.eshopbackend.common.enumConstant.InvoiceStateCode;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductBrandEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductCategoryEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductModelEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductSubCategoryEntity;
 import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,6 +32,7 @@ public class InvoiceEntity implements Serializable {
     private Long id;
 
     private String orderId;
+    private String invoieNo;
 
     Double unitPrice;
     Double discountRate;
@@ -35,12 +40,14 @@ public class InvoiceEntity implements Serializable {
     Double taxRate;
     Double shippingCharge;
 
-    @Column(length = 20)
+    @Column(length = 40)
     @Enumerated(value = EnumType.STRING)
     @NotNull
     InvoiceStateCode invoiceState;
 
     String paymentMethod;
+
+    Boolean isInvoiceSettle;
 
     @ManyToOne
     @JoinColumn(name = "buyer_id")
@@ -54,9 +61,25 @@ public class InvoiceEntity implements Serializable {
     @JoinColumn(name = "address_id")
     private AddressEntity addressEntity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private ProductEntity productEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_model_id")
+    MasterProductModelEntity masterProductModelEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_brand_id")
+    MasterProductBrandEntity masterProductBrandEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_sub_catergory_id")
+    MasterProductSubCategoryEntity masterProductSubCategoryEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "master_product_catergory_id")
+    MasterProductCategoryEntity masterProductCategoryEntity;
 
     @OneToMany(mappedBy = "invoiceEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<AuditTrailEntity> invoiceAuditTrailEntity;
@@ -70,6 +93,10 @@ public class InvoiceEntity implements Serializable {
     @CreatedDate
     @Column(name = "purchase_date")
     private Date purchaseDate;
+
+    @CreatedDate
+    @Column(name = "delivered_date")
+    private Date deliveredDate;
 
     @CreatedDate
     @Column(name = "delivery_date")

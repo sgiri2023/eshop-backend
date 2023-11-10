@@ -34,11 +34,33 @@ public class ProductController {
         return new ResponseEntity<>(productService.addProduct(sessionData.getUserId(), request), HttpStatus.OK);
     }
 
+    // http://localhost:8090/api/product/add-from-master-product
+    @PostMapping("/add-from-master-product")
+    public ResponseEntity<?>addProductFromMasterProduct(@RequestHeader String Authorization, @RequestBody ProductRequest request){
+        System.out.println("Add Product request: " + request);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(productService.addProductFromMasterProduct(sessionData.getUserId(), request), HttpStatus.OK);
+    }
+
     // http://localhost:8090/api/product/get-product-list
     @GetMapping("/get-product-list")
     public ResponseEntity<?> getProductList(){
         System.out.println("Get Product List");
         return new ResponseEntity<>(productService.getProductList(), HttpStatus.OK);
+    }
+
+    // http://localhost:8090/api/product/projection/monthwise
+    @GetMapping("/projection/monthwise")
+    public ResponseEntity<?> getMonthWiseProductProjection(@RequestHeader String Authorization){
+        System.out.println("Get Month Wise Product Projection");
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(productService.getProductProjection(sessionData.getUserId()), HttpStatus.OK);
     }
 
 }

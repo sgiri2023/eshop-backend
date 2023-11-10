@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProductService {
     public ProductResponse addProduct(Long userId, ProductRequest productRequest);
     public List<ProductResponse> getProductList();
+    public ProductResponse addProductFromMasterProduct(Long userId, ProductRequest productRequest);
 }

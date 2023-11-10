@@ -11,14 +11,22 @@ import java.util.Date;
 @NoArgsConstructor
 public class ProductRequest {
     public Long id;
-    private String name;
+
+    private Double discountRate;
+    private Double shippingCharge;
+    private Integer deliveryDays;
     private String description;
     private Integer stockCount;
-    private Double actualPrice;
-    private Double discountRate;
     private Double ratings;
-    private String pictureUrl;
     private Date createdDate;
     private Date lastModifyDate;
-    private Integer deliveryDays;
+
+    private Long masterProductModelId;
+    private Long masterProductBrandId;
+    private Long masterProductSubCategoryId;
+    private Long masterProductCategoryId;
+
+    // private String name;
+    // private Double actualPrice;
+    // private String pictureUrl;
 }

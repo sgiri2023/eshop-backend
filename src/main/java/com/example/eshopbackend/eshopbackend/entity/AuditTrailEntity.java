@@ -23,7 +23,7 @@ public class AuditTrailEntity {
     @Column(name = "ID")
     private Long id;
 
-    @Column(length = 20)
+    @Column(length = 40)
     @Enumerated(value = EnumType.STRING)
     @NotNull
     InvoiceStateCode invoiceState;

@@ -1,17 +1,17 @@
 package com.example.eshopbackend.eshopbackend.service.impl;
 
-import com.example.eshopbackend.eshopbackend.datamodel.AddressRequest;
-import com.example.eshopbackend.eshopbackend.datamodel.PermissionResponse;
-import com.example.eshopbackend.eshopbackend.datamodel.UserRequest;
-import com.example.eshopbackend.eshopbackend.datamodel.UserResponse;
+import com.example.eshopbackend.eshopbackend.common.utils.Utils;
+import com.example.eshopbackend.eshopbackend.datamodel.*;
 import com.example.eshopbackend.eshopbackend.entity.AddressEntity;
 import com.example.eshopbackend.eshopbackend.entity.PermissionEntity;
 import com.example.eshopbackend.eshopbackend.entity.UserEntity;
+import com.example.eshopbackend.eshopbackend.entity.WallerBankEntity;
 import com.example.eshopbackend.eshopbackend.modelconverter.AddressModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.UserModelConverter;
 import com.example.eshopbackend.eshopbackend.repository.AddressRepository;
 import com.example.eshopbackend.eshopbackend.repository.PermissionRepository;
 import com.example.eshopbackend.eshopbackend.repository.UserRepository;
+import com.example.eshopbackend.eshopbackend.repository.WalletBankRepository;
 import com.example.eshopbackend.eshopbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,8 +19,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.eshopbackend.eshopbackend.session.SessionStore.SESSION_TRACKER;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,12 +33,19 @@ public class UserServiceImpl implements UserService {
     PermissionRepository permissionRepository;
     @Autowired
     AddressRepository addressRepository;
+
+    @Autowired
+    WalletBankRepository walletBankRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    Utils utils;
 
     public UserResponse addUser(UserRequest userRequest) {
 
         // Create User First
+        userRequest.setIsAdmin(false);
         UserEntity userEntity = UserModelConverter.requestToEntity(userRequest);
         userEntity.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         UserEntity savedUserEntity = userRepository.save(userEntity);
@@ -50,11 +60,38 @@ public class UserServiceImpl implements UserService {
         permissionRepository.save(savedPermissionEntity);
 
         System.out.println("Permission Mapped");
+
+        // Create Wallet Account
+        WallerBankEntity walletBankEntity = new WallerBankEntity();
+        String walletId= utils.generateWalletId();
+        Double defaultWalletbalance = 0.00;
+        walletBankEntity.setName(savedUserEntity.getFirstName() + " " + savedUserEntity.getLastName());
+        walletBankEntity.setWalletId(walletId);
+        walletBankEntity.setBalance(defaultWalletbalance);
+        walletBankEntity.setUserEntity(savedUserEntity);
+        walletBankEntity.setIsArchive(false);
+        walletBankEntity.setCreatedDate(new Date());
+        walletBankEntity.setLastModifiedDate(new Date());
+        walletBankRepository.save(walletBankEntity);
+
+        System.out.println("Wallet Created and Mapped to User");
         return UserModelConverter.entityToResponse(savedUserEntity);
     }
 
     public List<UserResponse> getUserList(){
         List<UserEntity> userEntityList = userRepository.findAll();
+        List<UserResponse> userReponseList = new ArrayList<>();
+        if(!userEntityList.isEmpty()){
+            for(UserEntity user : userEntityList){
+                userReponseList.add(UserModelConverter.entityToResponse(user));
+            }
+        }
+        return userReponseList;
+    }
+
+    @Override
+    public List<UserResponse> getAllSellerAndBuyerUserList(){
+        List<UserEntity> userEntityList = userRepository.findByIsAdmin(false);
         List<UserResponse> userReponseList = new ArrayList<>();
         if(!userEntityList.isEmpty()){
             for(UserEntity user : userEntityList){
@@ -109,6 +146,17 @@ public class UserServiceImpl implements UserService {
         }
 
         return addressRequestsList;
+    }
+
+    public List<SessionDataModel> getAllLoginUserDetails(){
+        List<SessionDataModel> sessionDataModelList = new ArrayList<>();
+        for (String key: SESSION_TRACKER.keySet()) {
+            System.out.println("key : " + key);
+            System.out.println("value : " + SESSION_TRACKER.get(key));
+            sessionDataModelList.add(SESSION_TRACKER.get(key));
+        }
+
+        return sessionDataModelList;
     }
 
 }
