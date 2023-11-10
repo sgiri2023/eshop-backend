@@ -30,6 +30,10 @@ public class InvoiceModelConverter {
             calendar.setTime(new Date());
             calendar.add(Calendar.DATE, productEntity.getDeliveryDays().intValue());
             invoiceEntity.setDeliveryDate(calendar.getTime());
+            invoiceEntity.setMasterProductModelEntity(productEntity.getMasterProductModelEntity());
+            invoiceEntity.setMasterProductBrandEntity(productEntity.getMasterProductBrandEntity());
+            invoiceEntity.setMasterProductSubCategoryEntity(productEntity.getMasterProductSubCategoryEntity());
+            invoiceEntity.setMasterProductCategoryEntity(productEntity.getMasterProductCategoryEntity());
         }
         if(addressEntity != null){
             invoiceEntity.setAddressEntity(addressEntity);

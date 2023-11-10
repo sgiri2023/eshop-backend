@@ -130,4 +130,12 @@ public class UserController {
         List<AddressRequest> addressList = userService.getUserAddressList(sessionData.getUserId());
         return new ResponseEntity<>(addressList, HttpStatus.OK);
     }
+
+    // http://localhost:8090/api/user/get-all-session
+    @GetMapping("/get-all-session")
+    public ResponseEntity<?> getAllSession(){
+
+        System.out.println("Get ALl Session");
+        return new ResponseEntity<>(userService.getAllLoginUserDetails() , HttpStatus.OK);
+    }
 }
