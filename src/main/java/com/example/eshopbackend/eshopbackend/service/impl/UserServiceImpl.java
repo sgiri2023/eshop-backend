@@ -1,10 +1,7 @@
 package com.example.eshopbackend.eshopbackend.service.impl;
 
 import com.example.eshopbackend.eshopbackend.common.utils.Utils;
-import com.example.eshopbackend.eshopbackend.datamodel.AddressRequest;
-import com.example.eshopbackend.eshopbackend.datamodel.PermissionResponse;
-import com.example.eshopbackend.eshopbackend.datamodel.UserRequest;
-import com.example.eshopbackend.eshopbackend.datamodel.UserResponse;
+import com.example.eshopbackend.eshopbackend.datamodel.*;
 import com.example.eshopbackend.eshopbackend.entity.AddressEntity;
 import com.example.eshopbackend.eshopbackend.entity.PermissionEntity;
 import com.example.eshopbackend.eshopbackend.entity.UserEntity;
@@ -25,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.eshopbackend.eshopbackend.session.SessionStore.SESSION_TRACKER;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -147,6 +146,17 @@ public class UserServiceImpl implements UserService {
         }
 
         return addressRequestsList;
+    }
+
+    public List<SessionDataModel> getAllLoginUserDetails(){
+        List<SessionDataModel> sessionDataModelList = new ArrayList<>();
+        for (String key: SESSION_TRACKER.keySet()) {
+            System.out.println("key : " + key);
+            System.out.println("value : " + SESSION_TRACKER.get(key));
+            sessionDataModelList.add(SESSION_TRACKER.get(key));
+        }
+
+        return sessionDataModelList;
     }
 
 }

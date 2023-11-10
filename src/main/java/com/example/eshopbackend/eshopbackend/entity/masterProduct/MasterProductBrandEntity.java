@@ -1,5 +1,6 @@
 package com.example.eshopbackend.eshopbackend.entity.masterProduct;
 
+import com.example.eshopbackend.eshopbackend.entity.InvoiceEntity;
 import com.example.eshopbackend.eshopbackend.entity.ProductEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -55,4 +56,7 @@ public class MasterProductBrandEntity implements Serializable {
 
     @OneToMany(mappedBy = "masterProductBrandEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<ProductEntity> productEntityList;
+
+    @OneToMany(mappedBy = "masterProductBrandEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<InvoiceEntity> invoiceEntityList;
 }
