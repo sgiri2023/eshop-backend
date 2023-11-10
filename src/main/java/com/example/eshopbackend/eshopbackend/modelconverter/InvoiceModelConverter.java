@@ -30,15 +30,21 @@ public class InvoiceModelConverter {
             calendar.setTime(new Date());
             calendar.add(Calendar.DATE, productEntity.getDeliveryDays().intValue());
             invoiceEntity.setDeliveryDate(calendar.getTime());
+            invoiceEntity.setMasterProductModelEntity(productEntity.getMasterProductModelEntity());
+            invoiceEntity.setMasterProductBrandEntity(productEntity.getMasterProductBrandEntity());
+            invoiceEntity.setMasterProductSubCategoryEntity(productEntity.getMasterProductSubCategoryEntity());
+            invoiceEntity.setMasterProductCategoryEntity(productEntity.getMasterProductCategoryEntity());
         }
         if(addressEntity != null){
             invoiceEntity.setAddressEntity(addressEntity);
         }
 
         invoiceEntity.setOrderId(request.getOrderId());
+        invoiceEntity.setInvoieNo(request.getInvoiceNo());
 
         invoiceEntity.setPaymentMethod(request.getPaymentMethod());
         invoiceEntity.setInvoiceState(InvoiceStateCode.valueOf(request.getInvoiceState().toUpperCase().trim()));
+        invoiceEntity.setIsInvoiceSettle(request.getIsInvoiceSettle());
 
         invoiceEntity.setQuantity(request.getQuantity());
         invoiceEntity.setUnitPrice(request.getUnitPrice());
@@ -48,10 +54,8 @@ public class InvoiceModelConverter {
 
         invoiceEntity.setIsArchive(request.getIsArchive());
         invoiceEntity.setPurchaseDate(request.getPurchaseDate());
-        invoiceEntity.setCreatedDate(new Date());
-        invoiceEntity.setLastModifiedDate(new Date());
-
-
+        invoiceEntity.setCreatedDate(request.getCreatedDate());
+        invoiceEntity.setLastModifiedDate(request.getLastModifyDate());
 
         return invoiceEntity;
     }
@@ -62,7 +66,7 @@ public class InvoiceModelConverter {
             invoiceResponse.setId(entity.getId());
         }
         invoiceResponse.setOrderId(entity.getOrderId());
-
+        invoiceResponse.setInvoiceNo(entity.getInvoieNo());
         Double unitPrice = entity.getUnitPrice();
         Double discountRate = entity.getDiscountRate();
         Integer quantity = entity.getQuantity();
@@ -81,9 +85,13 @@ public class InvoiceModelConverter {
 
         invoiceResponse.setPaymentMethod(entity.getPaymentMethod());
         invoiceResponse.setInvoiceState(entity.getInvoiceState().getValue());
+        invoiceResponse.setIsInvoiceSettle(entity.getIsInvoiceSettle());
         invoiceResponse.setIsArchive(entity.getIsArchive());
         invoiceResponse.setPurchaseDate(entity.getPurchaseDate());
         invoiceResponse.setDeliveryDate(entity.getDeliveryDate());
+        invoiceResponse.setCreatedDate(entity.getCreatedDate());
+        invoiceResponse.setLastModifyDate(entity.getLastModifiedDate());
+        invoiceResponse.setBuyerName(entity.getBuyerEntity().getFirstName() + " " + entity.getBuyerEntity().getLastName());
 
         if(entity.getAddressEntity() != null){
             AddressRequest addressRequest = new AddressRequest();

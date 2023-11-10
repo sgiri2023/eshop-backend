@@ -16,6 +16,7 @@ import java.util.Date;
 public class InvoiceRequest {
     public Long id;
     String orderId;
+    String invoiceNo;
 
     Double unitPrice;
     Double discountRate;
@@ -28,9 +29,12 @@ public class InvoiceRequest {
     Long productId;
     String paymentMethod;
     String invoiceState;
+    Boolean isInvoiceSettle;
     Long sellerId;
     Long addressId;
     Boolean isArchive;
     Date purchaseDate;
     Date deliveryDate;
+    Date createdDate;
+    Date lastModifyDate;
 }
