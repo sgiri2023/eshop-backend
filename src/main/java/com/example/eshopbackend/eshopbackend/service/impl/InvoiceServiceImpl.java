@@ -265,47 +265,70 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     public List<InvoiceResponse> filterInvoice(Long userId, String userType, String searhcKey) {
 
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
+
         List<InvoiceResponse> invoiceListResponse = new ArrayList<>();
 
-        System.out.println("searching for: "+ userId + " - " + userType + " - " + searhcKey);
-        Specification<InvoiceEntity> invocieSpecification = new Specification<InvoiceEntity>() {
-            @Override
-            public Predicate toPredicate(Root<InvoiceEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        if(optionalUserEntity.isPresent()) {
+            UserEntity userEntity = optionalUserEntity.get();
+            System.out.println("searching for: " + userId + " - " + userType + " - " + searhcKey);
+            String userFillName = userEntity.getFirstName() + " " + userEntity.getLastName();
+            Specification<InvoiceEntity> invocieSpecification = new Specification<InvoiceEntity>() {
+                @Override
+                public Predicate toPredicate(Root<InvoiceEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 
-                final List<Predicate> predicateList = new ArrayList<>();
-                // predicateList.add(criteriaBuilder.like(root.get("invoieNo"), "%" + searhcKey.trim().toUpperCase() +
+                    final List<Predicate> predicateList = new ArrayList<>();
 
-                Join<InvoiceEntity, MasterProductModelEntity> joinModelEntityRoot = root.join("masterProductModelEntity", JoinType.LEFT);
-                Join<UserEntity, MasterProductModelEntity> joinSellerEntityRoot = root.join("sellerEntity", JoinType.LEFT);
-                Join<UserEntity, MasterProductModelEntity> joinBuyerEntityRoot = root.join("buyerEntity", JoinType.LEFT);
 
-                predicateList.add(
-                        criteriaBuilder.or(
-                                criteriaBuilder.like(criteriaBuilder.upper(root.get("orderId")), "%" + searhcKey.trim().toUpperCase() + "%"),
-                                criteriaBuilder.like(criteriaBuilder.upper(root.get("invoieNo")), "%" + searhcKey.trim().toUpperCase() + "%"),
-                                criteriaBuilder.like(criteriaBuilder.lower(joinModelEntityRoot.get("modelName")), "%" + searhcKey.trim().toLowerCase() + "%"),
+                    Join<UserEntity, MasterProductModelEntity> joinSellerEntityRoot = root.join("sellerEntity", JoinType.LEFT);
+                    Join<UserEntity, MasterProductModelEntity> joinBuyerEntityRoot = root.join("buyerEntity", JoinType.LEFT);
+
+                    Join<InvoiceEntity, MasterProductModelEntity> joinModelEntityRoot = root.join("masterProductModelEntity", JoinType.LEFT);
+
+                    predicateList.add(
+                            criteriaBuilder.or(
+                                    criteriaBuilder.like(criteriaBuilder.upper(root.get("orderId")), "%" + searhcKey.trim().toUpperCase() + "%"),
+                                    criteriaBuilder.like(criteriaBuilder.upper(root.get("invoieNo")), "%" + searhcKey.trim().toUpperCase() + "%"),
+                                    criteriaBuilder.like(criteriaBuilder.lower(joinModelEntityRoot.get("modelName")), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                    criteriaBuilder.like(
+                                            criteriaBuilder.concat(
+                                                    criteriaBuilder.concat(criteriaBuilder.lower(joinSellerEntityRoot.get("firstName")), " "),
+                                                    criteriaBuilder.lower(joinSellerEntityRoot.get("lastName"))
+                                            ), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                    criteriaBuilder.like(
+                                            criteriaBuilder.concat(
+                                                    criteriaBuilder.concat(criteriaBuilder.lower(joinBuyerEntityRoot.get("firstName")), " "),
+                                                    criteriaBuilder.lower(joinBuyerEntityRoot.get("lastName"))
+                                            ), "%" + searhcKey.trim().toLowerCase() + "%")
+                            )
+                    );
+
+                    // search for login seller or Buyer Invoice Only
+                    if(userEntity.getIsAdmin() == false){
+
+                        predicateList.add(userEntity.getIsCustomer() == true ?
+                                criteriaBuilder.like(
+                                    criteriaBuilder.concat(
+                                            criteriaBuilder.concat(criteriaBuilder.lower(joinBuyerEntityRoot.get("firstName")), " "),
+                                            criteriaBuilder.lower(joinBuyerEntityRoot.get("lastName"))
+                                    ), userFillName.toLowerCase()) :
                                 criteriaBuilder.like(
                                         criteriaBuilder.concat(
                                                 criteriaBuilder.concat(criteriaBuilder.lower(joinSellerEntityRoot.get("firstName")), " "),
                                                 criteriaBuilder.lower(joinSellerEntityRoot.get("lastName"))
-                                        ), "%" + searhcKey.trim().toLowerCase() + "%"),
-                                criteriaBuilder.like(
-                                        criteriaBuilder.concat(
-                                                criteriaBuilder.concat(criteriaBuilder.lower(joinBuyerEntityRoot.get("firstName")), " "),
-                                                criteriaBuilder.lower(joinBuyerEntityRoot.get("lastName"))
-                                        ), "%" + searhcKey.trim().toLowerCase() + "%")
-                        )
-                );
+                                        ), userFillName.toLowerCase())
+                        );
+                    }
+                    return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
+                }
+            };
 
-                return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
-            }
-        };
-
-        List<InvoiceEntity> invoiceEntityList = invoiceRepository.findAll(invocieSpecification);
-        if(!invoiceEntityList.isEmpty()){
-            for(InvoiceEntity invoice : invoiceEntityList){
-                InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoice);
-                invoiceListResponse.add(invoiceResponse);
+            List<InvoiceEntity> invoiceEntityList = invoiceRepository.findAll(invocieSpecification);
+            if (!invoiceEntityList.isEmpty()) {
+                for (InvoiceEntity invoice : invoiceEntityList) {
+                    InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoice);
+                    invoiceListResponse.add(invoiceResponse);
+                }
             }
         }
         return invoiceListResponse;
