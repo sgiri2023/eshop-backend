@@ -10,6 +10,7 @@ import com.example.eshopbackend.eshopbackend.datamodel.InvoiceResponse;
 import com.example.eshopbackend.eshopbackend.datamodel.OrderRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.TransactionRequest;
 import com.example.eshopbackend.eshopbackend.entity.*;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductModelEntity;
 import com.example.eshopbackend.eshopbackend.modelconverter.AuditTrailModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.InvoiceModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.TransactionModelConverter;
@@ -17,8 +18,10 @@ import com.example.eshopbackend.eshopbackend.repository.*;
 import com.example.eshopbackend.eshopbackend.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -251,6 +254,54 @@ public class InvoiceServiceImpl implements InvoiceService {
         List<InvoiceEntity> invoiceEntityList = invoiceRepository.findAll();
 
         List<InvoiceResponse> invoiceListResponse = new ArrayList<>();
+        if(!invoiceEntityList.isEmpty()){
+            for(InvoiceEntity invoice : invoiceEntityList){
+                InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoice);
+                invoiceListResponse.add(invoiceResponse);
+            }
+        }
+        return invoiceListResponse;
+    }
+
+    public List<InvoiceResponse> filterInvoice(Long userId, String userType, String searhcKey) {
+
+        List<InvoiceResponse> invoiceListResponse = new ArrayList<>();
+
+        System.out.println("searching for: "+ userId + " - " + userType + " - " + searhcKey);
+        Specification<InvoiceEntity> invocieSpecification = new Specification<InvoiceEntity>() {
+            @Override
+            public Predicate toPredicate(Root<InvoiceEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+
+                final List<Predicate> predicateList = new ArrayList<>();
+                // predicateList.add(criteriaBuilder.like(root.get("invoieNo"), "%" + searhcKey.trim().toUpperCase() +
+
+                Join<InvoiceEntity, MasterProductModelEntity> joinModelEntityRoot = root.join("masterProductModelEntity", JoinType.LEFT);
+                Join<UserEntity, MasterProductModelEntity> joinSellerEntityRoot = root.join("sellerEntity", JoinType.LEFT);
+                Join<UserEntity, MasterProductModelEntity> joinBuyerEntityRoot = root.join("buyerEntity", JoinType.LEFT);
+
+                predicateList.add(
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(criteriaBuilder.upper(root.get("orderId")), "%" + searhcKey.trim().toUpperCase() + "%"),
+                                criteriaBuilder.like(criteriaBuilder.upper(root.get("invoieNo")), "%" + searhcKey.trim().toUpperCase() + "%"),
+                                criteriaBuilder.like(criteriaBuilder.lower(joinModelEntityRoot.get("modelName")), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                criteriaBuilder.like(
+                                        criteriaBuilder.concat(
+                                                criteriaBuilder.concat(criteriaBuilder.lower(joinSellerEntityRoot.get("firstName")), " "),
+                                                criteriaBuilder.lower(joinSellerEntityRoot.get("lastName"))
+                                        ), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                criteriaBuilder.like(
+                                        criteriaBuilder.concat(
+                                                criteriaBuilder.concat(criteriaBuilder.lower(joinBuyerEntityRoot.get("firstName")), " "),
+                                                criteriaBuilder.lower(joinBuyerEntityRoot.get("lastName"))
+                                        ), "%" + searhcKey.trim().toLowerCase() + "%")
+                        )
+                );
+
+                return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
+            }
+        };
+
+        List<InvoiceEntity> invoiceEntityList = invoiceRepository.findAll(invocieSpecification);
         if(!invoiceEntityList.isEmpty()){
             for(InvoiceEntity invoice : invoiceEntityList){
                 InvoiceResponse invoiceResponse = InvoiceModelConverter.entityToResponse(invoice);

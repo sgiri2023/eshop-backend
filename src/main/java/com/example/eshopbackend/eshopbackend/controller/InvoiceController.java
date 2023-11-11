@@ -83,6 +83,22 @@ public class InvoiceController {
         return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
     }
 
+    // http://localhost:8090/api/invoice/list?userType=ADMIN&key=
+    @GetMapping("/list")
+    public ResponseEntity<?> getInvoiceList(
+            @RequestHeader String Authorization,
+            @RequestParam(value = "userType") String userType,
+            @RequestParam(value = "key", required = false) String searchKey){
+
+        System.out.println("Filter Invoice: " + userType + " - " + searchKey);
+        SessionDataModel sessionData = SESSION_TRACKER.get(Authorization);
+        if (sessionData == null) {
+            return new ResponseEntity<>("Access denied", HttpStatus.BAD_REQUEST);
+        }
+        List<InvoiceResponse> invoiceResponsesList = invoiceService.filterInvoice(sessionData.getUserId(), userType, searchKey);
+        return new ResponseEntity<>(invoiceResponsesList, HttpStatus.OK);
+    }
+
     // http://localhost:8090/api/invoice/betweenDates/get-invoice-list/{month}
     @GetMapping("/betweenDates/get-invoice-list/{month}")
     public ResponseEntity<?> getAllInvoiceBetweenDates(@RequestHeader String Authorization, @PathVariable(value = "month") Integer month){
