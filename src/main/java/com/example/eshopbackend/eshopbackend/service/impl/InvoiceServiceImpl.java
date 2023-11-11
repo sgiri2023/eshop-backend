@@ -10,7 +10,10 @@ import com.example.eshopbackend.eshopbackend.datamodel.InvoiceResponse;
 import com.example.eshopbackend.eshopbackend.datamodel.OrderRequest;
 import com.example.eshopbackend.eshopbackend.datamodel.TransactionRequest;
 import com.example.eshopbackend.eshopbackend.entity.*;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductBrandEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductCategoryEntity;
 import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductModelEntity;
+import com.example.eshopbackend.eshopbackend.entity.masterProduct.MasterProductSubCategoryEntity;
 import com.example.eshopbackend.eshopbackend.modelconverter.AuditTrailModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.InvoiceModelConverter;
 import com.example.eshopbackend.eshopbackend.modelconverter.TransactionModelConverter;
@@ -283,13 +286,19 @@ public class InvoiceServiceImpl implements InvoiceService {
                     Join<UserEntity, MasterProductModelEntity> joinSellerEntityRoot = root.join("sellerEntity", JoinType.LEFT);
                     Join<UserEntity, MasterProductModelEntity> joinBuyerEntityRoot = root.join("buyerEntity", JoinType.LEFT);
 
-                    Join<InvoiceEntity, MasterProductModelEntity> joinModelEntityRoot = root.join("masterProductModelEntity", JoinType.LEFT);
+                    Join<InvoiceEntity, MasterProductCategoryEntity> joinMasterProductCategoryEntityRoot = root.join("masterProductCategoryEntity", JoinType.LEFT);
+                    Join<InvoiceEntity, MasterProductSubCategoryEntity> joinMasterProductSubCategoryEntityRoot = root.join("masterProductSubCategoryEntity", JoinType.LEFT);
+                    Join<InvoiceEntity, MasterProductBrandEntity> joinMasterProductBrandEntityRoot = root.join("masterProductBrandEntity", JoinType.LEFT);
+                    Join<InvoiceEntity, MasterProductModelEntity> joinMasterProductModelEntityRoot = root.join("masterProductModelEntity", JoinType.LEFT);
 
                     predicateList.add(
                             criteriaBuilder.or(
                                     criteriaBuilder.like(criteriaBuilder.upper(root.get("orderId")), "%" + searhcKey.trim().toUpperCase() + "%"),
                                     criteriaBuilder.like(criteriaBuilder.upper(root.get("invoieNo")), "%" + searhcKey.trim().toUpperCase() + "%"),
-                                    criteriaBuilder.like(criteriaBuilder.lower(joinModelEntityRoot.get("modelName")), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                    criteriaBuilder.like(criteriaBuilder.lower(joinMasterProductCategoryEntityRoot.get("displayName")), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                    criteriaBuilder.like(criteriaBuilder.lower(joinMasterProductSubCategoryEntityRoot.get("displayName")), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                    criteriaBuilder.like(criteriaBuilder.lower(joinMasterProductBrandEntityRoot.get("brnadName")), "%" + searhcKey.trim().toLowerCase() + "%"),
+                                    criteriaBuilder.like(criteriaBuilder.lower(joinMasterProductModelEntityRoot.get("modelName")), "%" + searhcKey.trim().toLowerCase() + "%"),
                                     criteriaBuilder.like(
                                             criteriaBuilder.concat(
                                                     criteriaBuilder.concat(criteriaBuilder.lower(joinSellerEntityRoot.get("firstName")), " "),
